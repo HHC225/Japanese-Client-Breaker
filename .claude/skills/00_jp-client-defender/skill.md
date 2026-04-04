@@ -69,7 +69,7 @@ Agent(
 
   bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh input/ {WORKSPACE}/00_preprocessed_input.md
 
-  The wrapper script auto-installs uv if missing. If it fails, it prints Korean installation instructions and exits with code 1. In that case, relay the error message to the user and stop the pipeline.
+  The wrapper script auto-installs uv if missing. If it fails, it prints installation instructions and exits with code 1. In that case, relay the error message to the user and stop the pipeline.
 
   After the script completes, check {WORKSPACE}/00_file_manifest.json for any PDF or image files that need Read tool processing. Read those files and append their content to {WORKSPACE}/00_preprocessed_input.md.
 
@@ -131,7 +131,7 @@ Agent(
   model: "opus",
   prompt: "You are the Persuasion Strategist. Read your agent definition at .claude/agents/04_persuasion-strategist.md and your skill at .claude/skills/04_persuasion-scenarios/skill.md. Also read the detailed argument patterns at .claude/skills/04_persuasion-scenarios/references/argument-tree-patterns.md.
 
-  Read the critic findings from {WORKSPACE}/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. Write output to {WORKSPACE}/03_strategist_scenarios.json.
+  Read the critic findings from {WORKSPACE}/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. This includes BOTH the item-level 'findings' array AND the 'structural_criticisms' array. For structural criticisms, use their id as finding_id (e.g., STRUCT-001), set item_id to 'STRUCTURAL', and output them in a separate 'structural_scenarios' array. Write output to {WORKSPACE}/03_strategist_scenarios.json.
 
   Every argument tree must have culturally calibrated Japanese phrasing and a face-saving bridge at Level 3.
 
@@ -253,7 +253,7 @@ Then re-run Phase 4.
 
 #### If `FOUNDATION_PASS` → Check scenario verdicts
 
-If any scenario has verdict `REVISION_NEEDED` or `FAIL`, re-run Phase 3 (strategist) with revision instructions, then re-run Phase 4 (QA Phase B only). Maximum 2 scenario revision iterations.
+If any scenario has verdict `REVISION_NEEDED` or `FAIL`, re-run Phase 3 (strategist) with revision instructions, then re-run Phase 4. When re-running QA after a scenario revision (not a foundational restart), explicitly instruct the QA agent: "Phase A (Foundational Audit) has already PASSED. Skip Phase A entirely. Run ONLY Phase B (Argument Quality Validation) on the revised scenarios." Maximum 2 scenario revision iterations.
 
 #### Loop Limits
 
@@ -303,9 +303,15 @@ Agent(
 ## Data Flow
 
 ```
-[User Input: Deliverable]
+[User Input: Deliverable files in input/]
         │
         ▼
+┌─────────────────┐
+│ File             │  model: sonnet
+│ Preprocessor     │──→ 00_preprocessed_input.md + 00_file_manifest.json
+└────────┬────────┘
+         │
+         ▼
 ┌─────────────────┐
 │ Deliverable      │  model: sonnet
 │ Analyst          │──→ 01_analyst_items.json

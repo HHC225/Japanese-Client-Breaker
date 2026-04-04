@@ -3,6 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = [
 #     "openpyxl",
+#     "xlrd",
 #     "python-pptx",
 #     "python-docx",
 # ]
@@ -31,12 +32,32 @@ from pathlib import Path
 from datetime import datetime
 
 import openpyxl
+import xlrd
 from pptx import Presentation
 from docx import Document
 
 
+def escape_pipe(text):
+    """Escape pipe characters in cell text to prevent Markdown table breakage."""
+    return text.replace('|', '\\|')
+
+
+def rows_to_markdown_table(rows):
+    """Convert a list of row lists into a Markdown table string."""
+    if not rows:
+        return '(No data)\n'
+    max_cols = max(len(r) for r in rows)
+    rows = [r + [''] * (max_cols - len(r)) for r in rows]
+    header = [escape_pipe(c) for c in rows[0]]
+    table_lines = ['| ' + ' | '.join(header) + ' |']
+    table_lines.append('|' + '|'.join(['---'] * max_cols) + '|')
+    for row in rows[1:]:
+        table_lines.append('| ' + ' | '.join(escape_pipe(c) for c in row) + ' |')
+    return '\n'.join(table_lines) + '\n'
+
+
 def extract_excel(filepath):
-    """Extract all sheets from Excel file as markdown tables."""
+    """Extract all sheets from .xlsx Excel file as markdown tables."""
     wb = openpyxl.load_workbook(filepath, data_only=True)
     sections = []
 
@@ -52,21 +73,31 @@ def extract_excel(filepath):
             sections.append(f"### Sheet: {sheet_name}\n\n(Empty sheet)\n")
             continue
 
-        # Find max columns
-        max_cols = max(len(r) for r in rows)
-        # Pad rows
-        rows = [r + [''] * (max_cols - len(r)) for r in rows]
-
-        # Build markdown table
-        header = rows[0]
-        table_lines = ['| ' + ' | '.join(header) + ' |']
-        table_lines.append('|' + '|'.join(['---'] * max_cols) + '|')
-        for row in rows[1:]:
-            table_lines.append('| ' + ' | '.join(row) + ' |')
-
-        sections.append(f"### Sheet: {sheet_name}\n\n" + '\n'.join(table_lines) + '\n')
+        sections.append(f"### Sheet: {sheet_name}\n\n" + rows_to_markdown_table(rows))
 
     wb.close()
+    return '\n'.join(sections)
+
+
+def extract_excel_xls(filepath):
+    """Extract all sheets from legacy .xls Excel file as markdown tables."""
+    wb = xlrd.open_workbook(filepath)
+    sections = []
+
+    for sheet_name in wb.sheet_names():
+        ws = wb.sheet_by_name(sheet_name)
+        rows = []
+        for row_idx in range(ws.nrows):
+            cells = [str(ws.cell_value(row_idx, col_idx)) for col_idx in range(ws.ncols)]
+            if any(c.strip() for c in cells):
+                rows.append(cells)
+
+        if not rows:
+            sections.append(f"### Sheet: {sheet_name}\n\n(Empty sheet)\n")
+            continue
+
+        sections.append(f"### Sheet: {sheet_name}\n\n" + rows_to_markdown_table(rows))
+
     return '\n'.join(sections)
 
 
@@ -90,14 +121,7 @@ def extract_pptx(filepath):
                     cells = [cell.text.strip() for cell in row.cells]
                     rows.append(cells)
                 if rows:
-                    max_cols = max(len(r) for r in rows)
-                    rows = [r + [''] * (max_cols - len(r)) for r in rows]
-                    header = rows[0]
-                    table_lines = ['| ' + ' | '.join(header) + ' |']
-                    table_lines.append('|' + '|'.join(['---'] * max_cols) + '|')
-                    for row in rows[1:]:
-                        table_lines.append('| ' + ' | '.join(row) + ' |')
-                    texts.append('\n' + '\n'.join(table_lines))
+                    texts.append('\n' + rows_to_markdown_table(rows))
 
         slide_content = '\n'.join(texts) if texts else '(Empty slide)'
         # Try to get slide title
@@ -137,15 +161,7 @@ def extract_docx(filepath):
             cells = [cell.text.strip() for cell in row.cells]
             rows.append(cells)
         if rows:
-            max_cols = max(len(r) for r in rows)
-            rows = [r + [''] * (max_cols - len(r)) for r in rows]
-            header = rows[0]
-            table_lines = [f"\n**Table {i}:**\n"]
-            table_lines.append('| ' + ' | '.join(header) + ' |')
-            table_lines.append('|' + '|'.join(['---'] * max_cols) + '|')
-            for row in rows[1:]:
-                table_lines.append('| ' + ' | '.join(row) + ' |')
-            sections.append('\n'.join(table_lines) + '\n')
+            sections.append(f"\n**Table {i}:**\n\n" + rows_to_markdown_table(rows))
 
     return '\n'.join(sections)
 
@@ -160,16 +176,20 @@ def extract_csv(filepath):
     if not rows:
         return '(Empty CSV file)\n'
 
-    max_cols = max(len(r) for r in rows)
-    rows = [r + [''] * (max_cols - len(r)) for r in rows]
+    return rows_to_markdown_table(rows)
 
-    header = rows[0]
-    table_lines = ['| ' + ' | '.join(header) + ' |']
-    table_lines.append('|' + '|'.join(['---'] * max_cols) + '|')
-    for row in rows[1:]:
-        table_lines.append('| ' + ' | '.join(row) + ' |')
 
-    return '\n'.join(table_lines) + '\n'
+def extract_tsv(filepath):
+    """Extract TSV as markdown table."""
+    import csv
+    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        reader = csv.reader(f, delimiter='\t')
+        rows = list(reader)
+
+    if not rows:
+        return '(Empty TSV file)\n'
+
+    return rows_to_markdown_table(rows)
 
 
 def extract_text(filepath):
@@ -196,7 +216,7 @@ def get_file_metadata(filepath):
 # File type handlers
 EXTRACTORS = {
     '.xlsx': ('Excel Spreadsheet', extract_excel),
-    '.xls': ('Excel Spreadsheet (Legacy)', extract_excel),
+    '.xls': ('Excel Spreadsheet (Legacy)', extract_excel_xls),
     '.pptx': ('PowerPoint Presentation', extract_pptx),
     '.docx': ('Word Document', extract_docx),
     '.csv': ('CSV Data', extract_csv),
@@ -208,7 +228,7 @@ EXTRACTORS = {
     '.yml': ('YAML File', extract_text),
     '.html': ('HTML File', extract_text),
     '.htm': ('HTML File', extract_text),
-    '.tsv': ('TSV Data', extract_text),
+    '.tsv': ('TSV Data', extract_tsv),
 }
 
 # Files that need LLM-native reading (Read tool handles these)

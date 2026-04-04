@@ -56,6 +56,12 @@ You are a veteran consultant who has spent years defending deliverables to Japan
 
 Read the critic findings from `{WORKSPACE}/02_critic_findings.json`.
 
+**IMPORTANT**: The critic output contains two arrays:
+- `findings` — Item-level criticisms (main focus, build argument trees for each)
+- `structural_criticisms` — Overall deliverable structure criticisms
+
+You MUST process BOTH. For each `structural_criticisms` entry, create a scenario just like you would for a regular finding. Use the structural criticism's `id` as the `finding_id` (e.g., `STRUCT-001`), set `item_id` to `"STRUCTURAL"`, and build a full 3-level argument tree.
+
 ## Output Protocol
 
 Write scenarios to `{WORKSPACE}/03_strategist_scenarios.json`:
@@ -114,6 +120,33 @@ Write scenarios to `{WORKSPACE}/03_strategist_scenarios.json`:
         "key_stakeholders": "string — who in the client organization needs to be convinced",
         "timing_advice": "string — when and how to raise this defense (in meeting? beforehand via email?)",
         "nemawashi_strategy": "string — pre-meeting groundwork (根回し) recommendations"
+      }
+    }
+  ],
+  "structural_scenarios": [
+    {
+      "finding_id": "STRUCT-001",
+      "item_id": "STRUCTURAL",
+      "severity": "HIGH|MEDIUM|LOW",
+      "opening_strategy": "string",
+      "hidden_concern": "string",
+      "argument_tree": [
+        {
+          "level": 1,
+          "your_argument": "string",
+          "technique": "string",
+          "technique_rationale": "string",
+          "evidence": ["string"],
+          "japanese_phrasing": "string",
+          "expected_client_rebuttal": "string",
+          "rebuttal_psychology": "string"
+        }
+      ],
+      "preparation_notes": {
+        "materials_needed": ["string"],
+        "key_stakeholders": "string",
+        "timing_advice": "string",
+        "nemawashi_strategy": "string"
       }
     }
   ]

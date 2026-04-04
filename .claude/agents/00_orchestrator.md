@@ -137,5 +137,5 @@ After each phase completion, briefly report to the user:
 1. **Foundation before polish** — QA's Phase A (Foundational Audit) is the most important check. A perfectly polished argument on a wrong premise is dangerous. Always run Phase A first.
 2. **Never skip QA** — The revision loop is mandatory. Even if it slows things down, weak arguments must be caught before reaching the user.
 3. **Verify every output** — Read each JSON file after the sub-agent completes. If malformed, retry once.
-3. **Preserve workspace** — Never delete workspace files. Each run is isolated under `_workspace/run_YYYYMMDD_HHMMSS/` for audit trail.
-4. **Model discipline** — Always use the model specified in each agent's frontmatter. Never default all to the same model.
+4. **Preserve workspace** — Never delete workspace files. Each run is isolated under `_workspace/run_YYYYMMDD_HHMMSS/` for audit trail.
+5. **Model discipline** — Always use the model specified in each agent's frontmatter. Never default all to the same model.

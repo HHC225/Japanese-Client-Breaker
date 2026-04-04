@@ -1214,6 +1214,18 @@ function renderQASummary(data) {
       }
     });
   });
+  // Include structural criticisms QA data
+  (data.structural_criticisms || []).forEach(sc => {
+    if (sc.qa_reviews) {
+      firms.forEach(f => {
+        if (sc.qa_reviews[f]) {
+          const score = sc.qa_reviews[f].score || gradeMap[sc.qa_reviews[f].grade] || 0;
+          firmScores[f] += score;
+          firmCounts[f]++;
+        }
+      });
+    }
+  });
 
   function avgGrade(firm) {
     if (!firmCounts[firm]) return '-';
@@ -1243,8 +1255,132 @@ function renderQASummary(data) {
           </div>`;
         }).join('')}
       </div>
+      ${renderRadarChart(data)}
     </div>
   </section>`;
+}
+
+// ===== Warning Banners =====
+function renderWarnings(data) {
+  const warnings = [];
+  if (!data.items || !data.items.length) warnings.push('No analyzed items found in the data.');
+  const expectedFiles = ['analyst_items', 'critic_findings', 'strategist_scenarios', 'qa_results'];
+  const s = data.summary || {};
+  if (!s.total_findings && s.total_findings !== 0) warnings.push('Critic findings data may be missing or incomplete.');
+  if (!s.defense_readiness && s.defense_readiness !== 0) warnings.push('QA validation data may be missing — defense readiness score unavailable.');
+  // Check for unresolved QA items
+  (data.items || []).forEach(item => {
+    (item.findings || []).forEach(f => {
+      if (f.qa_verdict === 'FAIL') warnings.push(`Finding ${f.id || '?'} failed QA validation and may need manual revision.`);
+    });
+  });
+  if (!warnings.length) return '';
+  return warnings.map(w => `<div class="warning-banner">&#x26A0;&#xFE0F; ${esc(w)}</div>`).join('');
+}
+
+// ===== Structural Criticisms =====
+function renderStructuralCriticisms(data) {
+  const structs = data.structural_criticisms || [];
+  if (!structs.length) return '';
+  return `
+  <div class="section-header" id="section-structural"><h2>Structural Criticisms</h2><span class="badge badge-type">${structs.length} issues</span></div>
+  <div id="structural-container">${structs.map(sc => {
+    const sev = sc.severity || 'MEDIUM';
+    return `
+    <div class="item-card" id="struct-${esc(sc.id)}" data-max-severity="${sev}">
+      <div class="item-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="item-card-toggle">&#x25B6;</div>
+        <div class="item-card-info">
+          <div class="item-card-title"><span class="item-card-id">${esc(sc.id)}</span>${esc(sc.criticism)}</div>
+        </div>
+        <div class="item-card-badges">
+          <span class="badge badge-${severityClass(sev)}">${sev}</span>
+          ${sc.qa_verdict ? `<span class="badge badge-${verdictClass(sc.qa_verdict)}">${sc.qa_verdict.replace('_', ' ')}</span>` : ''}
+        </div>
+      </div>
+      <div class="item-card-body">
+        ${sc.details ? `<div class="item-card-desc">${esc(sc.details)}</div>` : ''}
+        ${sc.argument_tree ? `<div class="finding-detail"><div class="finding-detail-title">Defense Argument Tree</div>${renderArgumentTree(sc.argument_tree)}</div>` : ''}
+        ${sc.qa_reviews ? `<div class="finding-detail"><div class="finding-detail-title">QA Validation</div>${renderQAGrades(sc.qa_reviews)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ===== Radar Chart =====
+function renderRadarChart(data) {
+  const items = data.items || [];
+  const firms = ['mckinsey', 'bcg', 'bain', 'deloitte', 'accenture'];
+  const labels = ['McKinsey', 'BCG', 'Bain', 'Deloitte', 'Accenture'];
+  const gradeMap = { A: 95, 'A+': 98, 'A-': 90, B: 82, 'B+': 87, 'B-': 77, C: 67, 'C+': 72, 'C-': 62, D: 50, F: 30 };
+  const firmScores = {};
+  const firmCounts = {};
+  firms.forEach(f => { firmScores[f] = 0; firmCounts[f] = 0; });
+  items.forEach(item => {
+    (item.findings || []).forEach(finding => {
+      if (finding.qa_reviews) {
+        firms.forEach(f => {
+          if (finding.qa_reviews[f]) {
+            firmScores[f] += finding.qa_reviews[f].score || gradeMap[finding.qa_reviews[f].grade] || 0;
+            firmCounts[f]++;
+          }
+        });
+      }
+    });
+  });
+  // Include structural criticisms QA data in radar chart
+  (data.structural_criticisms || []).forEach(sc => {
+    if (sc.qa_reviews) {
+      firms.forEach(f => {
+        if (sc.qa_reviews[f]) {
+          firmScores[f] += sc.qa_reviews[f].score || gradeMap[sc.qa_reviews[f].grade] || 0;
+          firmCounts[f]++;
+        }
+      });
+    }
+  });
+  const avgs = firms.map(f => firmCounts[f] ? firmScores[f] / firmCounts[f] : 0);
+  if (avgs.every(v => v === 0)) return '';
+
+  const cx = 150, cy = 150, r = 110, n = 5;
+  const angles = firms.map((_, i) => (Math.PI * 2 * i / n) - Math.PI / 2);
+
+  function polar(angle, radius) {
+    return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)];
+  }
+
+  // Grid rings
+  let gridLines = '';
+  [20, 40, 60, 80, 100].forEach(pct => {
+    const rr = r * pct / 100;
+    const pts = angles.map(a => polar(a, rr).join(',')).join(' ');
+    gridLines += `<polygon points="${pts}" fill="none" stroke="#e2e8f0" stroke-width="1"/>`;
+  });
+  // Axis lines
+  angles.forEach(a => {
+    const [x, y] = polar(a, r);
+    gridLines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
+  });
+  // Data polygon
+  const dataPts = avgs.map((v, i) => polar(angles[i], r * v / 100).join(',')).join(' ');
+  // Labels
+  let labelEls = '';
+  labels.forEach((label, i) => {
+    const [x, y] = polar(angles[i], r + 20);
+    const anchor = x < cx - 5 ? 'end' : x > cx + 5 ? 'start' : 'middle';
+    labelEls += `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="12" font-weight="600" fill="#64748b" font-family="Inter, sans-serif">${label}</text>`;
+    labelEls += `<text x="${x}" y="${y + 14}" text-anchor="${anchor}" font-size="11" fill="#94a3b8" font-family="Inter, sans-serif">${Math.round(avgs[i])}</text>`;
+  });
+
+  return `
+  <div style="display:flex;justify-content:center;margin-top:20px">
+    <svg viewBox="0 0 300 300" width="300" height="300">
+      ${gridLines}
+      <polygon points="${dataPts}" fill="rgba(59,130,246,0.15)" stroke="var(--c-accent)" stroke-width="2"/>
+      ${avgs.map((v, i) => { const [x, y] = polar(angles[i], r * v / 100); return `<circle cx="${x}" cy="${y}" r="4" fill="var(--c-accent)"/>`; }).join('')}
+      ${labelEls}
+    </svg>
+  </div>`;
 }
 
 // ===== Main Render =====
@@ -1263,11 +1399,15 @@ function render(data) {
   document.getElementById('sidebar-subtitle').textContent = m.deliverable_summary || m.title || '';
   document.title = (m.title || 'Defense Report') + ' — JP Client Defender';
 
-  let html = renderSummary(data);
+  let html = renderWarnings(data);
+  html += renderSummary(data);
 
   // Items section
   html += `<div class="section-header" id="section-items"><h2>Item Analysis</h2><span class="badge badge-type">${(data.items || []).length} items</span></div>`;
   html += `<div id="items-container">${(data.items || []).map(item => renderItem(item)).join('')}</div>`;
+
+  // Structural criticisms section
+  html += renderStructuralCriticisms(data);
 
   // QA Summary
   html += renderQASummary(data);
@@ -1415,18 +1555,18 @@ document.addEventListener('keydown', e => {
 
 // Scroll spy for sidebar navigation
 let ticking = false;
-document.querySelector('.main').addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
   if (!ticking) {
     requestAnimationFrame(() => {
-      const scrollTop = document.querySelector('.main').scrollTop || window.scrollY;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
       let activeTarget = 'summary';
       document.querySelectorAll('.item-card').forEach(card => {
-        if (card.offsetTop - 100 <= scrollTop) {
+        if (card.getBoundingClientRect().top + scrollTop - 100 <= scrollTop) {
           activeTarget = card.id;
         }
       });
       const qaSummary = document.getElementById('section-qa-summary');
-      if (qaSummary && qaSummary.offsetTop - 100 <= scrollTop) {
+      if (qaSummary && qaSummary.getBoundingClientRect().top + scrollTop - 100 <= scrollTop) {
         activeTarget = 'qa-summary';
       }
       document.querySelectorAll('.nav-item').forEach(n => {

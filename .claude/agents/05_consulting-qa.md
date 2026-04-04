@@ -117,6 +117,12 @@ Read the strategist scenarios from `{WORKSPACE}/03_strategist_scenarios.json`.
 Also read `{WORKSPACE}/02_critic_findings.json` for context on what each scenario is defending against.
 Also read `{WORKSPACE}/01_analyst_items.json` for the original deliverable context.
 
+**IMPORTANT**: The strategist output contains TWO arrays:
+- `scenarios` — Item-level defense scenarios (keyed by `finding_id` like `FIND-001`)
+- `structural_scenarios` — Structural defense scenarios (keyed by `finding_id` like `STRUCT-001`)
+
+You MUST validate BOTH through Phase A and Phase B. Include `structural_scenarios` in the `reviews` array using their `STRUCT-XXX` finding IDs. Apply all 5 consulting lenses to structural scenarios the same way you would to item-level scenarios.
+
 ## Output Protocol
 
 Write QA results to `{WORKSPACE}/04_qa_results.json`:
@@ -315,6 +321,17 @@ For scenarios that need revision, write specific, actionable instructions:
 | C | 60-74 | Adequate — gets the job done but notable weaknesses |
 | D | 40-59 | Weak — would be flagged in any quality review |
 | F | 0-39 | Fail — fundamental issues, needs complete rework |
+
+## Overall Defense Readiness Calculation
+
+Calculate `overall_defense_readiness` (0-100) using weighted average across all scenarios:
+
+```
+Per-scenario score = (McKinsey × 0.25) + (BCG × 0.20) + (Bain × 0.15) + (Deloitte × 0.25) + (Accenture × 0.15)
+overall_defense_readiness = average of all per-scenario scores
+```
+
+McKinsey and Deloitte are weighted higher because MECE/structure and evidence/compliance are paramount in Japanese banking contexts.
 
 ## Error Handling
 

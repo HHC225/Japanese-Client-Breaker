@@ -37,9 +37,44 @@ Write the final report to the path specified by the orchestrator. Default: `{WOR
 
 The report generator should:
 1. Read the HTML template
-2. Merge all JSON data into a single `REPORT_DATA` object
+2. Merge all JSON data into a single `REPORT_DATA` object using the algorithm below
 3. Replace the data placeholder in the template with the actual JSON
 4. Write the complete HTML file
+
+## Data Merge Algorithm
+
+Build `REPORT_DATA` from the 4 upstream JSON files step-by-step:
+
+### Step 1: Build `metadata` and `summary`
+- `metadata.title` ← `01_analyst_items.deliverable_title`
+- `metadata.deliverable_type` ← `01_analyst_items.deliverable_type`
+- `metadata.deliverable_summary` ← `01_analyst_items.deliverable_summary`
+- `metadata.generated_at` ← current ISO timestamp
+- `summary.total_items` ← `01_analyst_items.total_items`
+- `summary.total_findings` ← `02_critic_findings.review_summary.total_findings`
+- `summary.severity_breakdown` ← `02_critic_findings.review_summary.severity_breakdown`
+- `summary.defense_readiness` ← `04_qa_results.qa_summary.overall_defense_readiness`
+- `summary.qa_pass_rate` ← calculate: `(04_qa_results.qa_summary.pass_count / total_scenarios_reviewed) * 100`
+- `summary.weakest_consulting_lens` ← `04_qa_results.qa_summary.weakest_lens`
+- `summary.top_critical_issues` ← `02_critic_findings.review_summary.top_3_critical_issues`
+
+### Step 2: Build `items[]` with nested `findings[]`
+For each item in `01_analyst_items.items`:
+1. Create an item entry with `id`, `title`, `category`, `section`, `content_summary`
+2. Find all findings in `02_critic_findings.findings` where `finding.item_id == item.id`
+3. For each matched finding, enrich with:
+   - `argument_tree` ← from `03_strategist_scenarios.scenarios` where `scenario.finding_id == finding.id`, take `scenario.argument_tree`
+   - `qa_reviews` ← from `04_qa_results.reviews` where `review.finding_id == finding.id`, take `review.consulting_reviews`
+   - `overall_qa_grade` ← `review.overall_grade`
+   - `qa_verdict` ← `review.scenario_verdict`
+4. Nest enriched findings under the item
+
+### Step 3: Build `structural_criticisms[]`
+For each entry in `02_critic_findings.structural_criticisms`:
+1. Copy `id`, `criticism`, `severity`, `details`
+2. Enrich with `argument_tree` from `03_strategist_scenarios.structural_scenarios` where `finding_id` matches
+3. Enrich with `qa_reviews`, `overall_qa_grade`, `qa_verdict` from `04_qa_results.reviews` where `finding_id` matches
+4. Rename strategist field `expected_client_rebuttal` to `client_rebuttal` in argument tree levels for template compatibility
 
 ## Report Data Structure
 
@@ -99,6 +134,18 @@ Merge all upstream data into this structure:
           "qa_verdict": "PASS|REVISION_NEEDED|FAIL"
         }
       ]
+    }
+  ],
+  "structural_criticisms": [
+    {
+      "id": "STRUCT-001",
+      "criticism": "string — criticism of overall deliverable structure",
+      "severity": "HIGH|MEDIUM|LOW",
+      "details": "string",
+      "argument_tree": [],
+      "qa_reviews": {},
+      "overall_qa_grade": "string",
+      "qa_verdict": "PASS|REVISION_NEEDED|FAIL"
     }
   ]
 }

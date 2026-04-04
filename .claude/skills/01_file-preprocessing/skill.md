@@ -34,7 +34,7 @@ bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh \
 The wrapper script (`run_extract.sh`) handles everything:
 1. Checks if `uv` is installed
 2. If not → auto-installs via `curl` (user-level, no sudo)
-3. If auto-install fails → prints clear Korean instructions with 4 install methods and stops
+3. If auto-install fails → prints clear installation instructions with multiple install methods and stops
 4. Runs `uv run extract_files.py` which auto-resolves Python dependencies (openpyxl, python-pptx, python-docx)
 
 The script automatically:
