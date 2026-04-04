@@ -1,6 +1,6 @@
-# Japanese-Hanko-Breaker
+# Japanese-Client-Breaker
 
-Japanese-Hanko-Breaker is a Japanese client deliverable defense harness. It analyzes deliverables, finds weaknesses from a Japanese banking client perspective, builds multi-level persuasion scenarios, validates them through Big 5 consulting firm QA, and outputs an interactive HTML report.
+Japanese-Client-Breaker is a Japanese client deliverable defense harness. It analyzes deliverables, finds weaknesses from a Japanese banking client perspective, builds multi-level persuasion scenarios, validates them through Big 5 consulting firm QA, and outputs an interactive HTML report.
 
 ## Prerequisites
 

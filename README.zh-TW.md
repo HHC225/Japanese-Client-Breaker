@@ -1,8 +1,8 @@
-# Japanese-Hanko-Breaker
+# Japanese-Client-Breaker
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Hanko-Breaker` 是一個面向日本客戶防禦場景的 harness，能把成果物轉化為面向嚴格日本客戶的說服與防禦論證。
+`Japanese-Client-Breaker` 是一個面向日本客戶防禦場景的 harness，能把成果物轉化為面向嚴格日本客戶的說服與防禦論證。
 
 這個專案已在真實業務中用來說服日本銀行與保險公司。它就是為了這種情境而打造的：交付文件只是工作的一半，更難的一半是扛過審查、回應間接異議，並給客戶一個能保全面子地批准的理由。
 
@@ -10,7 +10,7 @@
 
 ## 這是什麼
 
-`Japanese-Hanko-Breaker` 是一個面向日本客戶防禦場景、並只為單一目標設計的實戰型 harness：
+`Japanese-Client-Breaker` 是一個面向日本客戶防禦場景、並只為單一目標設計的實戰型 harness：
 
 把成果物轉化成能夠承受嚴格日本客戶審查的說服與防禦策略。
 
@@ -45,8 +45,8 @@
 1. Clone 倉庫並進入目錄。
 
 ```bash
-git clone https://github.com/HHC225/Japanese-Hanko-Breaker.git
-cd Japanese-Hanko-Breaker
+git clone https://github.com/HHC225/Japanese-Client-Breaker.git
+cd Japanese-Client-Breaker
 ```
 
 2. 把你的成果物放進 `input/`。

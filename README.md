@@ -1,8 +1,8 @@
-# Japanese-Hanko-Breaker
+# Japanese-Client-Breaker
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Hanko-Breaker` is a Japanese client defense harness that turns deliverables into persuasion-ready arguments for demanding Japanese clients.
+`Japanese-Client-Breaker` is a Japanese client defense harness that turns deliverables into persuasion-ready arguments for demanding Japanese clients.
 
 This project was used in real work to persuade Japanese banks and insurance companies. It was built for situations where delivering the document is only half the job, and the harder half is surviving the review, answering indirect objections, and giving the client a face-saving reason to approve.
 
@@ -10,7 +10,7 @@ Status: under active construction.
 
 ## What This Is
 
-`Japanese-Hanko-Breaker` is a practical Japanese client defense harness built for one specific job:
+`Japanese-Client-Breaker` is a practical Japanese client defense harness built for one specific job:
 
 turn a deliverable into a defense strategy that can stand up to a tough Japanese client review.
 
@@ -45,8 +45,8 @@ This repository is designed to be used from inside Claude Code. You do not need 
 1. Clone the repository and move into it.
 
 ```bash
-git clone https://github.com/HHC225/Japanese-Hanko-Breaker.git
-cd Japanese-Hanko-Breaker
+git clone https://github.com/HHC225/Japanese-Client-Breaker.git
+cd Japanese-Client-Breaker
 ```
 
 2. Put your deliverables in `input/`.

@@ -1,8 +1,8 @@
-# Japanese-Hanko-Breaker
+# Japanese-Client-Breaker
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Hanko-Breaker`는 일본 클라이언트 방어에 특화된 harness로, 성과물을 까다로운 일본 클라이언트를 위한 설득·방어 논리로 바꿉니다.
+`Japanese-Client-Breaker`는 일본 클라이언트 방어에 특화된 harness로, 성과물을 까다로운 일본 클라이언트를 위한 설득·방어 논리로 바꿉니다.
 
 이 프로젝트는 실제로 일본 은행과 보험회사를 설득하는 업무에 사용되었습니다. 문서를 제출하는 것만으로 끝나는 일이 아니라, 리뷰를 버티고, 간접적인 objection에 대응하고, 상대가 체면을 지키면서 승인할 수 있는 이유를 만들어야 하는 상황을 위해 만들어졌습니다.
 
@@ -10,7 +10,7 @@
 
 ## 이게 무엇인가
 
-`Japanese-Hanko-Breaker`는 일본 클라이언트 방어를 위해 설계된, 하나의 목적에 집중한 실전형 harness입니다.
+`Japanese-Client-Breaker`는 일본 클라이언트 방어를 위해 설계된, 하나의 목적에 집중한 실전형 harness입니다.
 
 성과물을 까다로운 일본 클라이언트 리뷰를 버틸 수 있는 설득·방어 전략으로 바꿉니다.
 
@@ -45,8 +45,8 @@
 1. 저장소를 클론한 뒤 디렉터리로 이동합니다.
 
 ```bash
-git clone https://github.com/HHC225/Japanese-Hanko-Breaker.git
-cd Japanese-Hanko-Breaker
+git clone https://github.com/HHC225/Japanese-Client-Breaker.git
+cd Japanese-Client-Breaker
 ```
 
 2. 성과물 파일을 `input/`에 넣습니다.

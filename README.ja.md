@@ -1,8 +1,8 @@
-# Japanese-Hanko-Breaker
+# Japanese-Client-Breaker
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Hanko-Breaker` は、日本クライアント向け防御に特化した harness であり、成果物を厳しい日本クライアント向けの説得・防御論点へ変換します。
+`Japanese-Client-Breaker` は、日本クライアント向け防御に特化した harness であり、成果物を厳しい日本クライアント向けの説得・防御論点へ変換します。
 
 このプロジェクトは、日本の銀行や保険会社を実際に説得する仕事の現場で使われました。文書を出して終わりではなく、レビューを切り抜け、間接的な異議に対応し、相手が面子を保ったまま承認できる理由を作る必要がある場面のために作られています。
 
@@ -10,7 +10,7 @@
 
 ## これは何か
 
-`Japanese-Hanko-Breaker` は、日本クライアント防御のために設計された、ひとつの目的に特化した実務向け harness です。
+`Japanese-Client-Breaker` は、日本クライアント防御のために設計された、ひとつの目的に特化した実務向け harness です。
 
 成果物を、厳しい日本企業クライアントのレビューに耐えられる説得・防御戦略へ変換します。
 
@@ -45,8 +45,8 @@
 1. リポジトリを clone して移動します。
 
 ```bash
-git clone https://github.com/HHC225/Japanese-Hanko-Breaker.git
-cd Japanese-Hanko-Breaker
+git clone https://github.com/HHC225/Japanese-Client-Breaker.git
+cd Japanese-Client-Breaker
 ```
 
 2. 成果物を `input/` に入れます。
