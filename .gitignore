@@ -1,0 +1,32 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Local runtime artifacts
+_workspace/
+input/*
+!input/.gitkeep
+.claude/settings.local.json
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
