@@ -33,18 +33,29 @@ The orchestrator agent runs a 5-stage pipeline, spawning each sub-agent sequenti
 | consulting-qa | `.claude/agents/05_consulting-qa.md` | opus | Validate through Big 5 lenses | consulting-qa | `04_qa_results.json` |
 | report-generator | `.claude/agents/06_report-generator.md` | sonnet | Generate HTML report | html-report-generation | `defense-report.html` |
 
+## Workspace Variable
+
+Throughout this document, `{WORKSPACE}` refers to a **timestamped run directory** created at the start of each pipeline execution. The orchestrator generates this path in Phase 0 and substitutes it into every sub-agent prompt. Example: `_workspace/run_20260404_153000`.
+
+When constructing sub-agent prompts below, **replace all `{WORKSPACE}` references with the actual workspace path**.
+
 ## Workflow
 
 ### Phase 0: Preparation & Preprocessing
 
-1. Create workspace directory:
+1. Create timestamped workspace directory:
+   ```bash
+   TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+   WORKSPACE="_workspace/run_${TIMESTAMP}"
+   mkdir -p "$WORKSPACE"
+   ln -sfn "run_${TIMESTAMP}" _workspace/latest
    ```
-   mkdir -p _workspace
-   ```
+   Use this path as `{WORKSPACE}` for ALL file operations in subsequent phases.
+   Also create/update a `_workspace/latest` symlink pointing to this run for user convenience.
 
 2. **Input directory**: `input/`
    - Users place deliverable files here (Excel, PDF, PowerPoint, Word, CSV, images, text)
-   - If user provides text directly instead → save to `_workspace/00_raw_input.txt` and skip preprocessing
+   - If user provides text directly instead → save to `{WORKSPACE}/00_raw_input.txt` and skip preprocessing
 
 3. **Run file preprocessor** to convert non-text files into LLM-readable Markdown:
 
@@ -56,20 +67,20 @@ Agent(
 
   Run the extraction script to convert all files in input/ into LLM-readable format:
 
-  bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh input/ _workspace/00_preprocessed_input.md
+  bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh input/ {WORKSPACE}/00_preprocessed_input.md
 
   The wrapper script auto-installs uv if missing. If it fails, it prints Korean installation instructions and exits with code 1. In that case, relay the error message to the user and stop the pipeline.
 
-  After the script completes, check _workspace/00_file_manifest.json for any PDF or image files that need Read tool processing. Read those files and append their content to _workspace/00_preprocessed_input.md.
+  After the script completes, check {WORKSPACE}/00_file_manifest.json for any PDF or image files that need Read tool processing. Read those files and append their content to {WORKSPACE}/00_preprocessed_input.md.
 
   Verify the final output is comprehensive."
 )
 ```
 
-**Completion check**: Verify `_workspace/00_preprocessed_input.md` exists and has substantial content.
+**Completion check**: Verify `{WORKSPACE}/00_preprocessed_input.md` exists and has substantial content.
 
 4. Determine the output report path:
-   - Default: `_workspace/defense-report.html`
+   - Default: `{WORKSPACE}/defense-report.html`
    - If user specifies a path, use that instead
 
 ### Phase 1: Analysis (Deliverable Analyst)
@@ -80,15 +91,15 @@ Launch the deliverable-analyst agent:
 Agent(
   description: "Analyze deliverable into items",
   model: "sonnet",
-  prompt: "You are the Deliverable Analyst. Read your agent definition at .claude/agents/02_deliverable-analyst.md and your skill at .claude/skills/02_deliverable-analysis/skill.md. Then analyze the preprocessed deliverable at _workspace/00_preprocessed_input.md and write the structured output to _workspace/01_analyst_items.json.
+  prompt: "You are the Deliverable Analyst. Read your agent definition at .claude/agents/02_deliverable-analyst.md and your skill at .claude/skills/02_deliverable-analysis/skill.md. Then analyze the preprocessed deliverable at {WORKSPACE}/00_preprocessed_input.md and write the structured output to {WORKSPACE}/01_analyst_items.json.
 
-  Also check _workspace/00_file_manifest.json to understand the source files and their types.
+  Also check {WORKSPACE}/00_file_manifest.json to understand the source files and their types.
 
   Follow the agent definition precisely. Output MUST be valid JSON."
 )
 ```
 
-**Completion check**: Verify `_workspace/01_analyst_items.json` exists and is valid JSON.
+**Completion check**: Verify `{WORKSPACE}/01_analyst_items.json` exists and is valid JSON.
 
 ### Phase 2: Critique (JP Client Critic)
 
@@ -100,7 +111,7 @@ Agent(
   model: "opus",
   prompt: "You are the Japanese Client Critic. Read your agent definition at .claude/agents/03_jp-client-critic.md and your skill at .claude/skills/03_jp-client-critique/skill.md. Also read the detailed reference at .claude/skills/03_jp-client-critique/references/jp-banking-client-patterns.md for comprehensive Japanese banking client patterns.
 
-  Read the analyst output from _workspace/01_analyst_items.json and generate detailed criticisms from a Japanese banking client perspective. Write output to _workspace/02_critic_findings.json.
+  Read the analyst output from {WORKSPACE}/01_analyst_items.json and generate detailed criticisms from a Japanese banking client perspective. Write output to {WORKSPACE}/02_critic_findings.json.
 
   Be genuinely critical. Think like a 部長 at a major Japanese bank reviewing a vendor deliverable. Find every weakness.
 
@@ -108,7 +119,7 @@ Agent(
 )
 ```
 
-**Completion check**: Verify `_workspace/02_critic_findings.json` exists and is valid JSON.
+**Completion check**: Verify `{WORKSPACE}/02_critic_findings.json` exists and is valid JSON.
 
 ### Phase 3: Persuasion (Persuasion Strategist)
 
@@ -120,7 +131,7 @@ Agent(
   model: "opus",
   prompt: "You are the Persuasion Strategist. Read your agent definition at .claude/agents/04_persuasion-strategist.md and your skill at .claude/skills/04_persuasion-scenarios/skill.md. Also read the detailed argument patterns at .claude/skills/04_persuasion-scenarios/references/argument-tree-patterns.md.
 
-  Read the critic findings from _workspace/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. Write output to _workspace/03_strategist_scenarios.json.
+  Read the critic findings from {WORKSPACE}/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. Write output to {WORKSPACE}/03_strategist_scenarios.json.
 
   Every argument tree must have culturally calibrated Japanese phrasing and a face-saving bridge at Level 3.
 
@@ -128,7 +139,7 @@ Agent(
 )
 ```
 
-**Completion check**: Verify `_workspace/03_strategist_scenarios.json` exists and is valid JSON.
+**Completion check**: Verify `{WORKSPACE}/03_strategist_scenarios.json` exists and is valid JSON.
 
 ### Phase 4: QA Validation (Consulting QA) — TWO-PHASE QA
 
@@ -143,9 +154,9 @@ Agent(
   prompt: "You are the Consulting QA Agent. Read your agent definition at .claude/agents/05_consulting-qa.md and your skill at .claude/skills/05_consulting-qa/skill.md. Also read the detailed consulting methods reference at .claude/skills/05_consulting-qa/references/big5-consulting-methods.md.
 
   Read all upstream artifacts:
-  - _workspace/01_analyst_items.json
-  - _workspace/02_critic_findings.json
-  - _workspace/03_strategist_scenarios.json
+  - {WORKSPACE}/01_analyst_items.json
+  - {WORKSPACE}/02_critic_findings.json
+  - {WORKSPACE}/03_strategist_scenarios.json
 
   CRITICAL: Run Phase A (Foundational Audit) FIRST.
   Check if the premises, analysis, criticism direction, and defense approach are fundamentally correct.
@@ -157,7 +168,7 @@ Agent(
   Validate every persuasion scenario through all 5 consulting firm lenses.
   Grade each argument at each level.
 
-  Write output to _workspace/04_qa_results.json.
+  Write output to {WORKSPACE}/04_qa_results.json.
 
   Be ruthlessly honest. A weak argument or wrong premise that passes QA damages the user's credibility in the actual meeting.
 
@@ -165,7 +176,7 @@ Agent(
 )
 ```
 
-**Completion check**: Verify `_workspace/04_qa_results.json` exists and is valid JSON.
+**Completion check**: Verify `{WORKSPACE}/04_qa_results.json` exists and is valid JSON.
 
 ### Phase 4.5: QA-Driven Loop (Conditional)
 
@@ -186,7 +197,7 @@ Agent(
   QA Restart Instructions: [paste restart_instructions from QA results]
 
   Re-analyze the deliverable incorporating the QA feedback above.
-  Write corrected output to _workspace/01_analyst_items.json (overwrite).
+  Write corrected output to {WORKSPACE}/01_analyst_items.json (overwrite).
 
   Output MUST be valid JSON."
 )
@@ -208,8 +219,8 @@ Agent(
   QA Foundation Issues: [paste foundation_issues from QA results]
   QA Restart Instructions: [paste restart_instructions from QA results]
 
-  Re-read _workspace/01_analyst_items.json and generate corrected criticisms.
-  Write corrected output to _workspace/02_critic_findings.json (overwrite).
+  Re-read {WORKSPACE}/01_analyst_items.json and generate corrected criticisms.
+  Write corrected output to {WORKSPACE}/02_critic_findings.json (overwrite).
 
   Output MUST be valid JSON."
 )
@@ -231,8 +242,8 @@ Agent(
   QA Foundation Issues: [paste foundation_issues from QA results]
   QA Restart Instructions: [paste restart_instructions from QA results]
 
-  Re-read _workspace/02_critic_findings.json and build corrected argument trees.
-  Write corrected output to _workspace/03_strategist_scenarios.json (overwrite).
+  Re-read {WORKSPACE}/02_critic_findings.json and build corrected argument trees.
+  Write corrected output to {WORKSPACE}/03_strategist_scenarios.json (overwrite).
 
   Output MUST be valid JSON."
 )
@@ -264,10 +275,10 @@ Agent(
   Read the HTML template at .claude/skills/06_html-report-generation/assets/report-template.html.
 
   Read all workspace data files:
-  - _workspace/01_analyst_items.json
-  - _workspace/02_critic_findings.json
-  - _workspace/03_strategist_scenarios.json
-  - _workspace/04_qa_results.json
+  - {WORKSPACE}/01_analyst_items.json
+  - {WORKSPACE}/02_critic_findings.json
+  - {WORKSPACE}/03_strategist_scenarios.json
+  - {WORKSPACE}/04_qa_results.json
 
   Merge all data into the REPORT_DATA structure defined in your agent definition. Then inject the data into the HTML template by replacing /* __REPORT_DATA_PLACEHOLDER__ */ with the actual JSON data.
 
@@ -287,7 +298,7 @@ Agent(
    - Severity breakdown
    - Defense readiness score
    - QA pass rate
-4. Preserve `_workspace/` for audit trail
+4. Preserve the workspace directory for audit trail — each run is isolated under `_workspace/run_YYYYMMDD_HHMMSS/`
 
 ## Data Flow
 

@@ -6,6 +6,8 @@ description: "Parses deliverables into discrete analyzable items with structural
 
 # Deliverable Analyst
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Core Role
 
 Parse any deliverable (document, spreadsheet, presentation, specification, report, code, design artifact) into a structured inventory of discrete items. Each item must be self-contained enough for independent critique and defense.
@@ -29,7 +31,7 @@ Read the deliverable thoroughly. If it's a file, use the Read tool. If multiple 
 
 ## Output Protocol
 
-Write a JSON file to `_workspace/01_analyst_items.json` with this structure:
+Write a JSON file to `{WORKSPACE}/01_analyst_items.json` with this structure:
 
 ```json
 {

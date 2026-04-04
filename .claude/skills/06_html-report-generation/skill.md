@@ -5,6 +5,8 @@ description: "Generate polished, interactive single-file HTML reports with busin
 
 # HTML Report Generation Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Compile all pipeline data into a single, self-contained HTML file that serves as the user's primary tool for Japanese client defense preparation. The report must be immediately useful — a professional can open it, find their item, see the criticism, and rehearse their argument within seconds.
@@ -19,10 +21,10 @@ Compile all pipeline data into a single, self-contained HTML file that serves as
 
 ### Step 1: Load Data
 Read all workspace JSON files:
-- `_workspace/01_analyst_items.json`
-- `_workspace/02_critic_findings.json`
-- `_workspace/03_strategist_scenarios.json`
-- `_workspace/04_qa_results.json`
+- `{WORKSPACE}/01_analyst_items.json`
+- `{WORKSPACE}/02_critic_findings.json`
+- `{WORKSPACE}/03_strategist_scenarios.json`
+- `{WORKSPACE}/04_qa_results.json`
 
 ### Step 2: Load Template
 Read the HTML template from `assets/report-template.html` (relative to this skill directory).

@@ -5,6 +5,8 @@ description: "Preprocess deliverable files from the input directory into LLM-rea
 
 # File Preprocessing Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Convert non-text deliverable files (Excel, PowerPoint, Word, PDF, images) into LLM-readable Markdown format. This is Phase 0 of the defense pipeline — it runs BEFORE the deliverable analyst.
@@ -26,7 +28,7 @@ Files placed in the designated input directory (default: `input/`).
 ```bash
 bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh \
   input/ \
-  _workspace/00_preprocessed_input.md
+  {WORKSPACE}/00_preprocessed_input.md
 ```
 
 The wrapper script (`run_extract.sh`) handles everything:
@@ -38,28 +40,28 @@ The wrapper script (`run_extract.sh`) handles everything:
 The script automatically:
 - Scans all files in the input directory
 - Extracts content from supported formats into Markdown tables and text
-- Creates a file manifest (`_workspace/00_file_manifest.json`)
+- Creates a file manifest (`{WORKSPACE}/00_file_manifest.json`)
 - Flags PDF and image files as "LLM-Native" — these need the Read tool
 
 ### Step 2: Handle LLM-Native Files
 
-After the script runs, check `_workspace/00_file_manifest.json` for `llm_native_paths`. For each:
+After the script runs, check `{WORKSPACE}/00_file_manifest.json` for `llm_native_paths`. For each:
 
 - **PDF files**: Use the Read tool with `pages` parameter
   ```
   Read(file_path="/path/to/file.pdf", pages="1-10")
   ```
-  Append the extracted content to `_workspace/00_preprocessed_input.md`
+  Append the extracted content to `{WORKSPACE}/00_preprocessed_input.md`
 
 - **Image files**: Use the Read tool (multimodal)
   ```
   Read(file_path="/path/to/image.png")
   ```
-  Describe the image content and append to `_workspace/00_preprocessed_input.md`
+  Describe the image content and append to `{WORKSPACE}/00_preprocessed_input.md`
 
 ### Step 3: Verify Output
 
-Check that `_workspace/00_preprocessed_input.md` contains meaningful content. If empty or minimal, report the issue.
+Check that `{WORKSPACE}/00_preprocessed_input.md` contains meaningful content. If empty or minimal, report the issue.
 
 ## Supported Formats
 
@@ -75,7 +77,7 @@ Check that `_workspace/00_preprocessed_input.md` contains meaningful content. If
 
 ## Output
 
-- `_workspace/00_preprocessed_input.md` — Combined Markdown with all extracted content
-- `_workspace/00_file_manifest.json` — Structured manifest of all input files
+- `{WORKSPACE}/00_preprocessed_input.md` — Combined Markdown with all extracted content
+- `{WORKSPACE}/00_file_manifest.json` — Structured manifest of all input files
 
 The deliverable-analyst agent reads `00_preprocessed_input.md` as its input instead of raw files.

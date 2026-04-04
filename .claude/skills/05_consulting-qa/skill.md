@@ -5,6 +5,8 @@ description: "Validate persuasion arguments through Big 5 consulting firm lenses
 
 # Consulting QA Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Every persuasion scenario must pass quality validation through 5 distinct consulting methodologies before reaching the final report. This skill provides the evaluation framework, grading criteria, and revision standards.
@@ -108,7 +110,7 @@ When writing revision instructions, be specific:
 
 ## Output Format
 
-Write QA results to `_workspace/04_qa_results.json`. See the agent definition for the complete schema.
+Write QA results to `{WORKSPACE}/04_qa_results.json`. See the agent definition for the complete schema.
 
 ## Quality Checklist
 - [ ] All 5 lenses applied to every scenario

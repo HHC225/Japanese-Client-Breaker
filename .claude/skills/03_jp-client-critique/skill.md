@@ -5,6 +5,8 @@ description: "Simulate a demanding Japanese banking/financial client reviewing d
 
 # Japanese Client Critique Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Evaluate deliverable items through the eyes of a demanding Japanese client — specifically the kind of meticulous, risk-averse reviewer found in Japanese banking, financial institutions, and large enterprise environments. Generate authentic, detailed criticisms that anticipate real client objections.
@@ -73,7 +75,7 @@ Understanding the hidden concern is crucial for building effective persuasion sc
 
 ### Critique Process
 
-1. **Read all items** from `_workspace/01_analyst_items.json`
+1. **Read all items** from `{WORKSPACE}/01_analyst_items.json`
 2. **Structural review** — Assess overall deliverable organization
 3. **MECE sweep** — Test all categorizations
 4. **Item-by-item critique** — Apply all 12 criticism types to each item
@@ -85,7 +87,7 @@ For detailed Japanese banking client behavior patterns and authentic criticism p
 
 ## Output Format
 
-Write findings to `_workspace/02_critic_findings.json`. See the agent definition for the complete schema.
+Write findings to `{WORKSPACE}/02_critic_findings.json`. See the agent definition for the complete schema.
 
 ## Quality Checklist
 - [ ] At least 1 finding per item (even if LOW severity)

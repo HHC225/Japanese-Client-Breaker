@@ -5,6 +5,8 @@ description: "Analyze and decompose any deliverable (documents, specs, presentat
 
 # Deliverable Analysis Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Decompose any deliverable into a structured inventory of discrete items, each with enough context for independent critique and defense. This is the first step in the Japanese client defense pipeline.
@@ -64,7 +66,7 @@ For any categorization found in the deliverable:
 
 ## Output Format
 
-Write structured JSON to `_workspace/01_analyst_items.json`. See the agent definition for the complete schema.
+Write structured JSON to `{WORKSPACE}/01_analyst_items.json`. See the agent definition for the complete schema.
 
 ## Quality Checklist
 - [ ] Every item has at least 1 vulnerability hint

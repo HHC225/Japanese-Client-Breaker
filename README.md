@@ -2,7 +2,7 @@
 
 # Japanese-Client-Breaker
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+[English](README.md) | [简体中文](docs/README.zh-CN.md) | [繁體中文](docs/README.zh-TW.md) | [日本語](docs/README.ja.md) | [한국어](docs/README.ko.md)
 
 `Japanese-Client-Breaker` is a defense harness for high-stakes Japanese enterprise reviews, where approval risk, indirect objections, and internal justification matter.
 
@@ -69,7 +69,7 @@ claude
 Analyze the deliverables in `input/` for a high-stakes Japanese enterprise review. Run the full defense pipeline and generate the HTML report.
 ```
 
-5. Open the generated report at `_workspace/defense-report.html`.
+5. Open the generated report at `_workspace/latest/defense-report.html` (or `_workspace/run_YYYYMMDD_HHMMSS/`).
 
 ## Requirements
 
@@ -102,7 +102,7 @@ The current design has five core agents:
 - `input/`
   Put the deliverable files you want to analyze here.
 - `_workspace/`
-  Generated at runtime. Contains intermediate artifacts and the final HTML report.
+  Generated at runtime. Each run creates a timestamped subdirectory (`run_YYYYMMDD_HHMMSS/`) with intermediate artifacts and the final HTML report. A `latest` symlink points to the most recent run.
 - `CLAUDE.md`
   Runtime instructions for using this repository inside Claude Code.
 - `.claude/agents/`

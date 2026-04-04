@@ -6,6 +6,8 @@ description: "Compiles all analysis, critique, persuasion scenarios, and QA resu
 
 # Report Generator
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Core Role
 
 Transform all upstream data (analyst items, critic findings, persuasion scenarios, QA results) into a single, self-contained HTML report file. The report must be visually polished, easy to navigate, and designed for a business professional who needs to quickly find and use persuasion strategies for their Japanese client meetings.
@@ -22,16 +24,16 @@ Transform all upstream data (analyst items, critic findings, persuasion scenario
 ## Input Protocol
 
 Read all workspace files:
-- `_workspace/01_analyst_items.json`
-- `_workspace/02_critic_findings.json`
-- `_workspace/03_strategist_scenarios.json`
-- `_workspace/04_qa_results.json`
+- `{WORKSPACE}/01_analyst_items.json`
+- `{WORKSPACE}/02_critic_findings.json`
+- `{WORKSPACE}/03_strategist_scenarios.json`
+- `{WORKSPACE}/04_qa_results.json`
 
 Also read the HTML template from the skill's assets directory (the orchestrator will provide the exact path).
 
 ## Output Protocol
 
-Write the final report to the path specified by the orchestrator. Default: `_workspace/defense-report.html`
+Write the final report to the path specified by the orchestrator. Default: `{WORKSPACE}/defense-report.html`
 
 The report generator should:
 1. Read the HTML template

@@ -1,6 +1,6 @@
 # Japanese-Client-Breaker
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+[English](../README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
 `Japanese-Client-Breaker` 是一個面向高風險日本企業審查場景的防禦 harness，適用於審批風險、間接異議與內部說明壓力都很重的情境。
 
@@ -67,7 +67,7 @@ claude
 請把 `input/` 中的成果物當作高風險日本企業審查材料來分析，執行完整防禦流程，並產生 HTML 報告。
 ```
 
-5. 開啟產生出的報告：`_workspace/defense-report.html`。
+5. 開啟產生出的報告：`_workspace/latest/defense-report.html`（或 `_workspace/run_YYYYMMDD_HHMMSS/`）。
 
 ## 環境需求
 
@@ -100,7 +100,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 - `input/`
   把要分析的成果物檔案放在這裡。
 - `_workspace/`
-  執行時產生。包含中間產物與最終 HTML 報告。
+  執行時產生。每次執行建立帶時間戳的子目錄（`run_YYYYMMDD_HHMMSS/`），`latest` 符號連結指向最近一次執行。
 - `CLAUDE.md`
   在 Claude Code 中使用本倉庫時的執行說明。
 - `.claude/agents/`

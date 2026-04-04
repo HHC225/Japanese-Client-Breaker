@@ -5,6 +5,8 @@ description: "Build multi-level counter-argument trees (minimum 3 levels) for de
 
 # Persuasion Scenarios Skill
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Purpose
 
 Transform each criticism into a structured, multi-level debate tree. Each tree has minimum 3 rounds of back-and-forth, using escalating persuasion techniques calibrated for Japanese business culture.
@@ -77,7 +79,7 @@ For HIGH severity findings, direct meeting defense often isn't enough. The prepa
 
 ## Process
 
-1. Read findings from `_workspace/02_critic_findings.json`
+1. Read findings from `{WORKSPACE}/02_critic_findings.json`
 2. For each finding, identify the hidden concern behind the surface criticism
 3. Select opening strategy based on severity and type
 4. Build 3-level argument tree with escalating techniques
@@ -88,7 +90,7 @@ For detailed argument patterns and examples, read `references/argument-tree-patt
 
 ## Output Format
 
-Write scenarios to `_workspace/03_strategist_scenarios.json`. See the agent definition for the complete schema.
+Write scenarios to `{WORKSPACE}/03_strategist_scenarios.json`. See the agent definition for the complete schema.
 
 ## Quality Checklist
 - [ ] Every finding has a scenario with minimum 3 levels

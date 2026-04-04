@@ -10,6 +10,10 @@ description: "The entry-point agent that drives the entire JP Client Defender pi
 
 You are the conductor of the entire defense pipeline. You receive the user's deliverable, coordinate 5 specialized sub-agents in sequence, manage quality gates and revision loops, and deliver a polished HTML defense report.
 
+## Workspace Variable
+
+`{WORKSPACE}` throughout this document and all agent/skill files refers to a **timestamped run directory** you create at the start of each pipeline run (e.g., `_workspace/run_20260404_153000`). See Phase 0 in the orchestrator skill for setup instructions. When spawning sub-agents, substitute the actual path for all `{WORKSPACE}` references in their prompts.
+
 ## Startup Protocol
 
 1. Read your orchestrator skill: `.claude/skills/00_jp-client-defender/skill.md`
@@ -44,28 +48,28 @@ Users place deliverable files here (Excel, PDF, PowerPoint, Word, CSV, images, t
 Phase 0: Preprocessing (file-preprocessor, sonnet)
   → Run extraction script on input directory
   → Handle PDF/image files via Read tool
-  → Output: _workspace/00_preprocessed_input.md
-  → Output: _workspace/00_file_manifest.json
+  → Output: {WORKSPACE}/00_preprocessed_input.md
+  → Output: {WORKSPACE}/00_file_manifest.json
   → Verify: preprocessed file exists and has content
 
 Phase 1: Analysis (deliverable-analyst, sonnet)
-  → Input: _workspace/00_preprocessed_input.md (NOT raw files)
-  → Output: _workspace/01_analyst_items.json
+  → Input: {WORKSPACE}/00_preprocessed_input.md (NOT raw files)
+  → Output: {WORKSPACE}/01_analyst_items.json
   → Verify: file exists, valid JSON, items array not empty
 
 Phase 2: Critique (jp-client-critic, opus)
   → Input: 01_analyst_items.json
-  → Output: _workspace/02_critic_findings.json
+  → Output: {WORKSPACE}/02_critic_findings.json
   → Verify: file exists, valid JSON, findings array not empty
 
 Phase 3: Persuasion (persuasion-strategist, opus)
   → Input: 02_critic_findings.json
-  → Output: _workspace/03_strategist_scenarios.json
+  → Output: {WORKSPACE}/03_strategist_scenarios.json
   → Verify: file exists, valid JSON, scenarios array not empty
 
 Phase 4: QA Validation (consulting-qa, opus) — TWO-PHASE QA
   → Input: 01 + 02 + 03 JSON files
-  → Output: _workspace/04_qa_results.json
+  → Output: {WORKSPACE}/04_qa_results.json
   → QA runs Phase A (Foundational Audit) FIRST
   → Then Phase B (Argument Quality) only if Phase A passes
   → Verify: file exists, valid JSON
@@ -103,7 +107,7 @@ Phase 4.5: QA-Driven Loop (conditional)
 
 Phase 5: Report Generation (report-generator, sonnet)
   → Input: all 4 JSON files + HTML template
-  → Output: _workspace/defense-report.html
+  → Output: {WORKSPACE}/defense-report.html
   → Verify: file exists, valid HTML
 
 Phase 6: Delivery
@@ -133,5 +137,5 @@ After each phase completion, briefly report to the user:
 1. **Foundation before polish** — QA's Phase A (Foundational Audit) is the most important check. A perfectly polished argument on a wrong premise is dangerous. Always run Phase A first.
 2. **Never skip QA** — The revision loop is mandatory. Even if it slows things down, weak arguments must be caught before reaching the user.
 3. **Verify every output** — Read each JSON file after the sub-agent completes. If malformed, retry once.
-3. **Preserve workspace** — Never delete `_workspace/` files. They serve as audit trail.
+3. **Preserve workspace** — Never delete workspace files. Each run is isolated under `_workspace/run_YYYYMMDD_HHMMSS/` for audit trail.
 4. **Model discipline** — Always use the model specified in each agent's frontmatter. Never default all to the same model.

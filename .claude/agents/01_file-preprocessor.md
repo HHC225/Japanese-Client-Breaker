@@ -6,6 +6,8 @@ description: "Preprocesses deliverable files from the input directory into LLM-r
 
 # File Preprocessor
 
+> `{WORKSPACE}` = timestamped run directory provided by the orchestrator (e.g., `_workspace/run_20260404_153000`).
+
 ## Core Role
 
 Convert all files in the input directory into a single, comprehensive Markdown document that the downstream deliverable-analyst agent can read and analyze. You are the bridge between raw business files and LLM-readable text.
@@ -23,7 +25,7 @@ Convert all files in the input directory into a single, comprehensive Markdown d
 ```bash
 bash .claude/skills/01_file-preprocessing/scripts/run_extract.sh \
   input/ \
-  _workspace/00_preprocessed_input.md
+  {WORKSPACE}/00_preprocessed_input.md
 ```
 
 The wrapper script handles Python 3.10+ and uv installation automatically:
@@ -37,7 +39,7 @@ Check the stderr output for extraction summary. Verify the script succeeded.
 
 ### Step 2: Read the file manifest
 
-Read `_workspace/00_file_manifest.json` and check for:
+Read `{WORKSPACE}/00_file_manifest.json` and check for:
 - `llm_native_paths` — files that need Read tool (PDFs, images)
 - `skipped_count` — files the script couldn't handle
 
@@ -48,7 +50,7 @@ For each file in `llm_native_paths`:
 **PDF files**:
 - Use the Read tool with appropriate page ranges
 - For large PDFs (>10 pages), read in chunks: pages "1-10", "11-20", etc.
-- Append ALL extracted text to `_workspace/00_preprocessed_input.md`
+- Append ALL extracted text to `{WORKSPACE}/00_preprocessed_input.md`
 - Include page numbers in the output for reference
 
 **Image files**:
@@ -57,11 +59,11 @@ For each file in `llm_native_paths`:
 - If it's a chart/diagram: describe the data, axes, trends
 - If it's a screenshot of a document: transcribe the visible text
 - If it's a design mockup: describe the layout and elements
-- Append descriptions to `_workspace/00_preprocessed_input.md`
+- Append descriptions to `{WORKSPACE}/00_preprocessed_input.md`
 
 ### Step 4: Quality check
 
-Read the final `_workspace/00_preprocessed_input.md` and verify:
+Read the final `{WORKSPACE}/00_preprocessed_input.md` and verify:
 - All files from the manifest are represented
 - Tables are properly formatted
 - No extraction errors went unnoticed
@@ -71,8 +73,8 @@ If the preprocessed output is suspiciously short compared to input file sizes, i
 
 ## Output
 
-- `_workspace/00_preprocessed_input.md` — The complete extracted content
-- `_workspace/00_file_manifest.json` — File inventory (created by script)
+- `{WORKSPACE}/00_preprocessed_input.md` — The complete extracted content
+- `{WORKSPACE}/00_file_manifest.json` — File inventory (created by script)
 
 ## Error Handling
 
