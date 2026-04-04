@@ -4,17 +4,17 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Client-Breaker` is a Japanese client defense harness that turns deliverables into persuasion-ready arguments for demanding Japanese clients.
+`Japanese-Client-Breaker` is a defense harness for high-stakes Japanese enterprise reviews, where approval risk, indirect objections, and internal justification matter.
 
-This project was used in real work to persuade Japanese banks and insurance companies. It was built for situations where delivering the document is only half the job, and the harder half is surviving the review, answering indirect objections, and giving the client a face-saving reason to approve.
+This project was used in real work, including work to persuade Japanese banks and insurance companies. It was built for situations where delivering the document is only half the job, and the harder half is surviving a high-stakes review, answering indirect objections, and giving stakeholders a face-saving rationale they can defend internally.
 
 Status: under active construction.
 
 ## What This Is
 
-`Japanese-Client-Breaker` is a practical Japanese client defense harness built for one specific job:
+`Japanese-Client-Breaker` is a practical defense harness built for one specific job:
 
-turn a deliverable into a defense strategy that can stand up to a tough Japanese client review.
+turn a deliverable into a defense strategy that can stand up to a high-stakes Japanese enterprise review.
 
 It is designed for review cultures where the real pressure is not only content quality, but also:
 
@@ -30,12 +30,12 @@ This is not a generic prompt pack. It is a structured pipeline for analyzing a d
 
 ## Why It Exists
 
-In many Japanese enterprise reviews, especially in banking and insurance, a good deliverable still fails if:
+In high-stakes Japanese enterprise reviews, a good deliverable still fails if:
 
 - the logic has even a small gap
 - the categories are not MECE
 - the rationale is not explicit enough
-- the client cannot explain the recommendation internally
+- the reviewer cannot justify the recommendation internally
 - the reviewer feels approval creates personal risk
 
 This harness exists to prepare for that reality.
@@ -66,7 +66,7 @@ claude
 4. Paste this prompt.
 
 ```text
-Analyze the deliverables in `input/` from a demanding Japanese client perspective. Run the full defense pipeline and generate the HTML report.
+Analyze the deliverables in `input/` for a high-stakes Japanese enterprise review. Run the full defense pipeline and generate the HTML report.
 ```
 
 5. Open the generated report at `_workspace/defense-report.html`.
@@ -89,7 +89,7 @@ The current design has five core agents:
 1. `deliverable-analyst`
    Breaks the deliverable into critique-ready items with assumptions, dependencies, and structural gaps.
 2. `jp-client-critic`
-   Simulates a demanding Japanese client and generates realistic objections.
+   Simulates a high-stakes Japanese enterprise reviewer and generates realistic objections.
 3. `persuasion-strategist`
    Builds multi-level counter-argument trees with culturally calibrated phrasing.
 4. `consulting-qa`
@@ -116,10 +116,10 @@ The current design has five core agents:
 
 This project is best suited for:
 
-- consulting teams preparing for difficult client reviews
-- delivery teams facing Japanese banks, insurers, and large enterprises
-- strategy and PM teams that need to defend recommendations, not just write them
-- operators building agent workflows for high-friction enterprise persuasion
+- teams preparing for high-stakes Japanese enterprise reviews
+- delivery teams working under approval pressure inside Japanese organizations
+- strategy and PM teams that need recommendations people can justify internally
+- operators building agent workflows for objection handling and approval support
 
 ## License
 
@@ -129,7 +129,7 @@ Use it freely.
 
 ## Contributing
 
-If this harness helps you win difficult reviews, survive a brutal client meeting, or persuade a Japanese bank or insurance company, add your pattern, edge case, phrasing, or improvement and open a pull request.
+If this harness helps you survive a high-stakes Japanese enterprise review, answer indirect objections, or build approval-ready arguments people can defend internally, add your pattern, edge case, phrasing, or improvement and open a pull request.
 
 Good field experience is more valuable than polished theory. Please contribute it back.
 

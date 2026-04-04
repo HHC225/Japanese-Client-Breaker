@@ -2,17 +2,17 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-`Japanese-Client-Breaker`는 일본 클라이언트 방어에 특화된 harness로, 성과물을 까다로운 일본 클라이언트를 위한 설득·방어 논리로 바꿉니다.
+`Japanese-Client-Breaker`는 승인 리스크, 간접적인 objection, 내부 설명 책임이 큰 high-stakes Japanese enterprise review를 위한 방어 harness입니다.
 
-이 프로젝트는 실제로 일본 은행과 보험회사를 설득하는 업무에 사용되었습니다. 문서를 제출하는 것만으로 끝나는 일이 아니라, 리뷰를 버티고, 간접적인 objection에 대응하고, 상대가 체면을 지키면서 승인할 수 있는 이유를 만들어야 하는 상황을 위해 만들어졌습니다.
+이 프로젝트는 실제로 일본 은행과 보험회사를 설득하는 업무를 포함한 현업에서 사용되었습니다. 문서를 제출하는 것만으로 끝나는 일이 아니라, high-stakes review를 버티고, 간접적인 objection에 대응하고, 관계자들이 내부에서 설명할 수 있으면서도 체면을 지키고 승인할 수 있는 논리를 만들어야 하는 상황을 위해 만들어졌습니다.
 
 상태: 현재도 계속 구성 중입니다.
 
 ## 이게 무엇인가
 
-`Japanese-Client-Breaker`는 일본 클라이언트 방어를 위해 설계된, 하나의 목적에 집중한 실전형 harness입니다.
+`Japanese-Client-Breaker`는 하나의 목적에 집중한 실전형 방어 harness입니다.
 
-성과물을 까다로운 일본 클라이언트 리뷰를 버틸 수 있는 설득·방어 전략으로 바꿉니다.
+성과물을 high-stakes Japanese enterprise review를 버틸 수 있는 설득·방어 전략으로 바꿉니다.
 
 이 프로젝트가 상정하는 리뷰 문화에서는 단순히 내용만 좋은 것으로는 부족합니다. 실제 압박은 아래 같은 기준에서 옵니다.
 
@@ -28,12 +28,12 @@
 
 ## 왜 만들었는가
 
-일본 대기업 리뷰, 특히 은행과 보험 현장에서는 성과물 자체가 좋아도 실패하는 경우가 많습니다. 예를 들면 다음과 같습니다.
+high-stakes Japanese enterprise review에서는 성과물 자체가 좋아도 실패하는 경우가 많습니다. 예를 들면 다음과 같습니다.
 
 - 로직에 작은 비약이 있다
 - 분류가 MECE하지 않다
 - 근거나 이유가 충분히 드러나지 않는다
-- 클라이언트가 내부에서 설명하기 어렵다
+- 리뷰어가 내부에서 정당화하기 어렵다
 - 승인하는 사람이 본인 리스크를 느낀다
 
 이 harness는 그 현실에 대비하기 위해 만들어졌습니다.
@@ -64,7 +64,7 @@ claude
 4. 아래 프롬프트를 붙여넣습니다.
 
 ```text
-`input/`에 있는 성과물을 까다로운 일본 클라이언트 관점에서 분석하고, 전체 방어 파이프라인을 실행해서 HTML 보고서를 생성해줘.
+`input/`에 있는 성과물을 high-stakes Japanese enterprise review 관점에서 분석하고, 전체 방어 파이프라인을 실행해서 HTML 보고서를 생성해줘.
 ```
 
 5. 생성된 보고서 `_workspace/defense-report.html`을 엽니다.
@@ -87,7 +87,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 1. `deliverable-analyst`
    성과물을 비판 가능한 단위까지 쪼개고, 가정·의존관계·구조적 빈틈을 정리합니다.
 2. `jp-client-critic`
-   까다로운 일본 클라이언트를 시뮬레이션해서 현실적인 지적과 반론을 만듭니다.
+   high-stakes Japanese enterprise reviewer를 시뮬레이션해서 현실적인 지적과 반론을 만듭니다.
 3. `persuasion-strategist`
    일본 비즈니스 맥락에 맞는 표현으로 다단계 반박 트리를 구축합니다.
 4. `consulting-qa`
@@ -114,10 +114,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 이 프로젝트는 특히 아래와 잘 맞습니다.
 
-- 빡센 클라이언트 리뷰를 준비해야 하는 컨설팅 팀
-- 일본 은행, 보험사, 대기업을 상대하는 딜리버리 팀
-- 제안서를 쓰는 것보다 제안서를 지켜내는 일이 중요한 전략/PM 팀
-- 마찰이 큰 엔터프라이즈 설득 워크플로를 agent로 만들고 싶은 운영자
+- high-stakes Japanese enterprise review를 준비해야 하는 팀
+- 일본 조직 내부의 승인 압박 아래서 움직이는 딜리버리 팀
+- 내부 설명과 정당화가 가능한 제안이 필요한 전략/PM 팀
+- objection 대응과 승인 지원 워크플로를 agent로 만들고 싶은 운영자
 
 ## 라이선스
 
@@ -127,7 +127,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## 기여
 
-이 harness가 어려운 리뷰를 통과하게 해줬거나, 빡센 클라이언트 미팅을 버티게 해줬거나, 실제로 일본 은행이나 보험회사를 설득하는 데 도움이 됐다면, 그때 효과 있었던 패턴, 엣지 케이스, 표현, 개선점을 추가해서 pull request를 보내주세요.
+이 harness가 high-stakes Japanese enterprise review를 버티게 해줬거나, 간접적인 objection 대응에 도움이 됐거나, 내부에서 설명 가능한 승인 논리를 만드는 데 도움이 됐다면, 그때 효과 있었던 패턴, 엣지 케이스, 표현, 개선점을 추가해서 pull request를 보내주세요.
 
 매끈한 이론보다 현장에서 먹힌 경험이 더 가치 있습니다. 꼭 다시 기여해 주세요.
 

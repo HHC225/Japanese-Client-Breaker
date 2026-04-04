@@ -1,6 +1,6 @@
 # Japanese-Client-Breaker
 
-Japanese-Client-Breaker is a Japanese client deliverable defense harness. It analyzes deliverables, finds weaknesses from a Japanese banking client perspective, builds multi-level persuasion scenarios, validates them through Big 5 consulting firm QA, and outputs an interactive HTML report.
+Japanese-Client-Breaker is a defense harness for high-stakes Japanese enterprise reviews, where approval risk, indirect objections, and internal justification matter. It analyzes deliverables, finds weaknesses from a Japanese enterprise review perspective, builds multi-level persuasion scenarios, validates them through Big 5 consulting firm QA, and outputs an interactive HTML report.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Japanese-Client-Breaker is a Japanese client deliverable defense harness. It ana
 1. Place deliverable files in `input/` directory (Excel, PDF, PowerPoint, Word, CSV, images, text)
 2. Ask Claude to analyze:
    ```
-   Analyze the deliverables in input/ from a Japanese client perspective
+   Analyze the deliverables in input/ for a high-stakes Japanese enterprise review
    ```
 3. The pipeline runs automatically and outputs `_workspace/defense-report.html`
 
