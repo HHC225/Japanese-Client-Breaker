@@ -25,6 +25,8 @@ Read all workspace JSON files:
 - `{WORKSPACE}/02_critic_findings.json`
 - `{WORKSPACE}/03_strategist_scenarios.json`
 - `{WORKSPACE}/04_qa_results.json`
+- `{WORKSPACE}/05_decision_recommendations.json` (if exists)
+- `{WORKSPACE}/06_gap_analysis.json` (if exists)
 
 ### Step 2: Load Template
 Read the HTML template from `assets/report-template.html` (relative to this skill directory).
@@ -54,7 +56,7 @@ const REPORT_DATA = {actual merged data};
 
 After writing the HTML file, run the validation script:
 ```bash
-node .claude/skills/06_html-report-generation/scripts/validate-report.js {WORKSPACE}/{TIMESTAMP}_client-defense-report.html
+node .claude/skills/08_html-report-generation/scripts/validate-report.js {WORKSPACE}/{TIMESTAMP}_client-defense-report.html
 ```
 If the script exits with code 0, the report is valid. If it exits with code 1, read the error output, fix the issue, and re-write the file.
 

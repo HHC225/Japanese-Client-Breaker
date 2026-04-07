@@ -910,7 +910,9 @@ ul, ol { list-style: none; }
 .legend-popup.show { display: block; }
 .legend-section { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--c-border-light); }
 .legend-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-.legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--c-text-muted); margin-bottom: 4px; }
+.legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--c-text-muted); margin-bottom: 6px; }
+.legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.legend-item:last-child { margin-bottom: 0; }
 
 /* ===== QA Firm Detail Cards ===== */
 .qa-grades-detail {
@@ -940,6 +942,159 @@ ul, ol { list-style: none; }
 }
 .qa-firm-detail.open .qa-firm-detail-body { display: block; }
 .qa-firm-detail.open .qa-firm-detail-header span:last-child svg { transform: rotate(90deg); }
+
+/* ===== Sub-tabs (within Findings) ===== */
+.sub-tab-bar {
+  display: flex; gap: 0; border-bottom: 2px solid var(--c-border);
+  margin-bottom: 20px; position: sticky; top: 0; z-index: 10;
+  background: var(--c-bg); padding-top: 4px;
+}
+.sub-tab-btn {
+  padding: 10px 20px;
+  font-size: 13px; font-weight: 600;
+  color: var(--c-text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.sub-tab-btn:hover { color: var(--c-text); background: var(--c-surface-hover); }
+.sub-tab-btn.active { color: var(--c-accent); border-bottom-color: var(--c-accent); }
+.sub-tab-btn .sub-tab-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 6px;
+  border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 700;
+  background: var(--c-border-light); color: var(--c-text-muted);
+}
+.sub-tab-btn.active .sub-tab-count { background: var(--c-accent-soft); color: var(--c-accent); }
+.sub-tab-pane { display: none; }
+.sub-tab-pane.active { display: block; }
+
+/* ===== No Issues Section ===== */
+.no-issues-section {
+  margin-top: 24px;
+  border-top: 1px solid var(--c-border-light);
+  padding-top: 16px;
+}
+.no-issues-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  color: var(--c-text-muted);
+  font-size: 13px; font-weight: 600;
+  transition: background var(--transition);
+}
+.no-issues-header:hover { background: var(--c-surface-hover); }
+.no-issues-list { display: none; padding: 8px 0; }
+.no-issues-section.open .no-issues-list { display: block; }
+.no-issues-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--c-text-secondary);
+  border-bottom: 1px solid var(--c-border-light);
+}
+.no-issues-item:last-child { border-bottom: none; }
+.no-issues-check { color: var(--c-pass); flex-shrink: 0; }
+
+/* ===== Input Content ===== */
+.input-content {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--c-text);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+}
+.input-content h1, .input-content h2, .input-content h3 { margin-top: 1.2em; margin-bottom: 0.4em; font-weight: 700; color: var(--c-text); }
+.input-content h1 { font-size: 1.4em; border-bottom: 2px solid var(--c-border); padding-bottom: 6px; }
+.input-content h2 { font-size: 1.2em; border-bottom: 1px solid var(--c-border-light); padding-bottom: 4px; }
+.input-content h3 { font-size: 1.05em; }
+.input-content ul, .input-content ol { padding-left: 1.5em; margin: 0.4em 0; }
+.input-content li { margin-bottom: 0.2em; }
+.input-content code { background: var(--c-bg); padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+.input-content pre { background: var(--c-bg); border: 1px solid var(--c-border-light); border-radius: var(--radius-sm); padding: 12px 16px; overflow-x: auto; margin: 0.6em 0; }
+.input-content table { border-collapse: collapse; width: 100%; margin: 0.6em 0; }
+.input-content th, .input-content td { border: 1px solid var(--c-border); padding: 6px 10px; font-size: 13px; text-align: left; }
+.input-content th { background: var(--c-bg); font-weight: 600; }
+.input-content blockquote { border-left: 3px solid var(--c-accent); margin: 0.4em 0; padding: 4px 14px; color: var(--c-text-secondary); }
+.input-content hr { border: none; border-top: 1px solid var(--c-border); margin: 1em 0; }
+
+/* ===== Gap Cards ===== */
+.gap-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.gap-card-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.gap-card-header:hover { background: var(--c-surface-hover); }
+.gap-card.open .gap-card-header { border-bottom: 1px solid var(--c-border-light); }
+.gap-card-body { display: none; padding: 18px; }
+.gap-card.open .gap-card-body { display: block; }
+.gap-severity { padding: 2px 8px; border-radius: var(--radius-full); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.gap-severity.critical { background: #fef2f2; color: #dc2626; }
+.gap-severity.important { background: #fffbeb; color: #d97706; }
+.gap-severity.nice-to-have { background: #eff6ff; color: #2563eb; }
+.gap-detail { margin-bottom: 14px; }
+.gap-detail-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-text-muted); margin-bottom: 4px; }
+.gap-detail-content { font-size: 13px; line-height: 1.7; color: var(--c-text-secondary); }
+
+/* ===== Decision Cards ===== */
+.decision-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.decision-card-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.decision-card-header:hover { background: var(--c-surface-hover); }
+.decision-card.open .decision-card-header { border-bottom: 1px solid var(--c-border-light); }
+.decision-card-body { display: none; padding: 18px; }
+.decision-card.open .decision-card-body { display: block; }
+.urgency-badge { padding: 2px 8px; border-radius: var(--radius-full); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.urgency-badge.urgent { background: #fef2f2; color: #dc2626; }
+.urgency-badge.important { background: #fffbeb; color: #d97706; }
+.urgency-badge.deferrable { background: #eff6ff; color: #2563eb; }
+.option-card {
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 8px;
+  background: var(--c-bg);
+}
+.option-card.recommended {
+  border-color: var(--c-pass);
+  background: var(--c-pass-soft);
+}
+.option-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.option-label { font-weight: 700; font-size: 14px; }
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.pros-item, .cons-item { font-size: 12px; line-height: 1.6; padding-left: 14px; position: relative; }
+.pros-item::before { content: '+'; position: absolute; left: 2px; color: var(--c-pass); font-weight: 700; }
+.cons-item::before { content: '-'; position: absolute; left: 2px; color: var(--c-high); font-weight: 700; }
 
 /* ===== QA Summary Firm Expansion ===== */
 .qa-firm-expanded {
@@ -1081,25 +1236,25 @@ ul, ol { list-style: none; }
       <div class="legend-popup" id="legend-popup">
         <div class="legend-section">
           <div class="legend-title">Severity</div>
-          <span class="badge badge-high">HIGH</span> Critical issue
-          <span class="badge badge-medium">MEDIUM</span> Notable weakness
-          <span class="badge badge-low">LOW</span> Minor concern
-          <span class="badge badge-undecided">UNDECIDED</span> Pending decision (not a defect)
+          <div class="legend-item"><span class="badge badge-high">HIGH</span> Critical issue</div>
+          <div class="legend-item"><span class="badge badge-medium">MEDIUM</span> Notable weakness</div>
+          <div class="legend-item"><span class="badge badge-low">LOW</span> Minor concern</div>
+          <div class="legend-item"><span class="badge badge-undecided">UNDECIDED</span> Pending decision (not a defect)</div>
         </div>
         <div class="legend-section">
           <div class="legend-title">Criticism Type</div>
-          <span class="badge badge-type">COMPREHENSIVENESS</span> Missing elements
-          <span class="badge badge-type">AMBIGUITY</span> Unclear/undecided
-          <span class="badge badge-type">EVIDENCE</span> Insufficient proof
-          <span class="badge badge-type">RISK</span> Unaddressed risk
-          <span class="badge badge-type">FORM</span> Format/style issue
-          <span class="badge badge-type">PROCESS</span> Missing procedure
+          <div class="legend-item"><span class="badge badge-type">COMPREHENSIVENESS</span> Missing elements</div>
+          <div class="legend-item"><span class="badge badge-type">AMBIGUITY</span> Unclear/undecided</div>
+          <div class="legend-item"><span class="badge badge-type">EVIDENCE</span> Insufficient proof</div>
+          <div class="legend-item"><span class="badge badge-type">RISK</span> Unaddressed risk</div>
+          <div class="legend-item"><span class="badge badge-type">FORM</span> Format/style issue</div>
+          <div class="legend-item"><span class="badge badge-type">PROCESS</span> Missing procedure</div>
         </div>
         <div class="legend-section">
           <div class="legend-title">QA Verdict</div>
-          <span class="badge badge-pass">PASS</span> Defense ready
-          <span class="badge badge-revision">REVISION NEEDED</span> Needs improvement
-          <span class="badge badge-fail">FAIL</span> Must rework
+          <div class="legend-item"><span class="badge badge-pass">PASS</span> Defense ready</div>
+          <div class="legend-item"><span class="badge badge-revision">REVISION NEEDED</span> Needs improvement</div>
+          <div class="legend-item"><span class="badge badge-fail">FAIL</span> Must rework</div>
         </div>
       </div>
       <button class="header-btn" id="btn-meeting-mode" title="Show only PASS items">
@@ -1122,6 +1277,20 @@ ul, ol { list-style: none; }
     <button class="tab-btn" data-tab="qa">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       QA Report
+    </button>
+    <button class="tab-btn" data-tab="gaps">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Gaps
+      <span class="tab-count" id="tab-count-gaps">0</span>
+    </button>
+    <button class="tab-btn" data-tab="decisions">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Decisions
+      <span class="tab-count" id="tab-count-decisions">0</span>
+    </button>
+    <button class="tab-btn" data-tab="input">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Input
     </button>
   </div>
 
@@ -1183,14 +1352,45 @@ function renderSummary(data) {
   const s = data.summary || {};
   const m = data.metadata || {};
   const sev = s.severity_breakdown || {};
+  const gs = data.gap_summary || {};
+  const ds = data.decision_summary || {};
   const readiness = s.defense_readiness || 0;
   const circumference = 2 * Math.PI * 48;
   const offset = circumference - (circumference * readiness / 100);
   const readinessColor = readiness >= 75 ? 'var(--c-pass)' : readiness >= 50 ? 'var(--c-medium)' : 'var(--c-high)';
   const topIssues = s.top_critical_issues || [];
+  const completeness = gs.completeness_score || 0;
+  const compColor = completeness >= 70 ? 'var(--c-pass)' : completeness >= 40 ? 'var(--c-medium)' : 'var(--c-high)';
+  const compOffset = circumference - (circumference * completeness / 100);
+
+  // Severity bar percentages
+  const totalF = (sev.HIGH || 0) + (sev.MEDIUM || 0) + (sev.LOW || 0) + (sev.UNDECIDED || 0);
+  const pctH = totalF ? Math.round((sev.HIGH || 0) / totalF * 100) : 0;
+  const pctU = totalF ? Math.round((sev.UNDECIDED || 0) / totalF * 100) : 0;
+  const pctM = totalF ? Math.round((sev.MEDIUM || 0) / totalF * 100) : 0;
+  const pctL = totalF ? 100 - pctH - pctU - pctM : 0;
+
+  // Collect HIGH severity items for quick navigation
+  const highItems = [];
+  (data.items || []).forEach(item => {
+    (item.findings || []).forEach(f => {
+      if (f.severity === 'HIGH') highItems.push({ itemId: item.id, findingId: f.id, title: f.criticism || f.criticism_jp || f.id, itemTitle: item.title });
+    });
+  });
 
   let html = `
   <section class="summary-section" id="section-summary">
+    <!-- Deliverable Context -->
+    <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-md);padding:18px 22px;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700;color:var(--c-text);margin-bottom:4px">${esc(m.title || 'Untitled')}</div>
+      <div style="font-size:13px;color:var(--c-text-secondary);line-height:1.7">${esc(m.deliverable_summary || '')}</div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="padding:2px 10px;border-radius:var(--radius-full);background:var(--c-accent-soft);color:var(--c-accent);font-size:11px;font-weight:600">${esc(m.deliverable_type || 'Document')}</span>
+        <span style="padding:2px 10px;border-radius:var(--radius-full);background:var(--c-bg);color:var(--c-text-muted);font-size:11px;font-weight:600">${esc(m.generated_at ? m.generated_at.substring(0, 10) : '')}</span>
+      </div>
+    </div>
+
+    <!-- Metric Cards Row 1 -->
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-card-label">Items Analyzed</div>
@@ -1203,6 +1403,7 @@ function renderSummary(data) {
         <div class="summary-card-sub">
           <span style="color:var(--c-high)">${sev.HIGH || 0} High</span> &middot;
           <span style="color:var(--c-medium)">${sev.MEDIUM || 0} Mid</span> &middot;
+          <span style="color:#8b5cf6">${sev.UNDECIDED || 0} Undec</span> &middot;
           <span style="color:var(--c-low)">${sev.LOW || 0} Low</span>
         </div>
       </div>
@@ -1213,37 +1414,108 @@ function renderSummary(data) {
       </div>
     </div>
 
-    <div class="gauge-container">
-      <div class="gauge">
-        <svg viewBox="0 0 108 108" width="120" height="120">
-          <circle class="gauge-bg" cx="54" cy="54" r="48" />
-          <circle class="gauge-fill" cx="54" cy="54" r="48"
-            stroke="${readinessColor}"
-            stroke-dasharray="${circumference}"
-            stroke-dashoffset="${offset}" />
-        </svg>
-        <div class="gauge-text" style="color:${readinessColor}">${readiness}</div>
+    <!-- Metric Cards Row 2: Gaps & Decisions -->
+    ${(gs.total_gaps || ds.total_undecided) ? `
+    <div class="summary-grid" style="margin-top:12px">
+      ${gs.total_gaps ? `<div class="summary-card">
+        <div class="summary-card-label">Gaps Found</div>
+        <div class="summary-card-value" style="color:var(--c-high)">${gs.total_gaps}</div>
+        <div class="summary-card-sub">
+          <span style="color:var(--c-high)">${(gs.severity_breakdown || {}).CRITICAL || 0} Critical</span> &middot;
+          <span style="color:var(--c-medium)">${(gs.severity_breakdown || {}).IMPORTANT || 0} Important</span>
+        </div>
+      </div>` : ''}
+      ${ds.total_undecided ? `<div class="summary-card">
+        <div class="summary-card-label">Undecided Items</div>
+        <div class="summary-card-value" style="color:#8b5cf6">${ds.total_undecided}</div>
+        <div class="summary-card-sub">
+          <span style="color:var(--c-high)">${(ds.urgency_breakdown || {}).URGENT || 0} Urgent</span> &middot;
+          <span style="color:var(--c-medium)">${(ds.urgency_breakdown || {}).IMPORTANT || 0} Important</span>
+        </div>
+      </div>` : ''}
+      ${gs.total_gaps ? `<div class="summary-card">
+        <div class="summary-card-label">Completeness</div>
+        <div class="summary-card-value" style="color:${compColor}">${completeness}<span style="font-size:14px;font-weight:500;color:var(--c-text-muted)">/100</span></div>
+        <div class="summary-card-sub">Gap analysis score</div>
+      </div>` : ''}
+    </div>` : ''}
+
+    <!-- Severity Distribution Bar -->
+    ${totalF > 0 ? `
+    <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-md);padding:16px 20px;margin-top:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--c-text-muted);margin-bottom:10px">Severity Distribution</div>
+      <div style="display:flex;height:28px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--c-border-light)">
+        ${pctH > 0 ? `<div style="width:${pctH}%;background:var(--c-high);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;min-width:${pctH > 8 ? '0' : '28px'}">${sev.HIGH}</div>` : ''}
+        ${pctU > 0 ? `<div style="width:${pctU}%;background:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;min-width:${pctU > 8 ? '0' : '28px'}">${sev.UNDECIDED}</div>` : ''}
+        ${pctM > 0 ? `<div style="width:${pctM}%;background:var(--c-medium);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;min-width:${pctM > 8 ? '0' : '28px'}">${sev.MEDIUM}</div>` : ''}
+        ${pctL > 0 ? `<div style="width:${pctL}%;background:var(--c-low);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;min-width:${pctL > 8 ? '0' : '28px'}">${sev.LOW}</div>` : ''}
       </div>
-      <div class="gauge-info">
-        <div class="gauge-title">Defense Readiness Score</div>
-        <div class="gauge-detail">
-          ${readiness >= 75
-            ? 'Your deliverable has <strong>strong defense</strong> coverage. Most arguments passed Big 5 consulting QA validation.'
-            : readiness >= 50
-            ? 'Your deliverable has <strong>moderate defense</strong> coverage. Some arguments need strengthening before the client meeting.'
-            : 'Your deliverable has <strong>weak defense</strong> coverage. Several critical arguments need revision before presenting to the client.'
-          }
-          ${s.weakest_consulting_lens ? `<br>Weakest lens: <strong>${esc(s.weakest_consulting_lens)}</strong>` : ''}
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--c-text-muted)">
+        ${pctH > 0 ? `<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-high);margin-right:4px"></span>HIGH ${sev.HIGH}</span>` : ''}
+        ${pctU > 0 ? `<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#8b5cf6;margin-right:4px"></span>UNDECIDED ${sev.UNDECIDED}</span>` : ''}
+        ${pctM > 0 ? `<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-medium);margin-right:4px"></span>MEDIUM ${sev.MEDIUM}</span>` : ''}
+        ${pctL > 0 ? `<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-low);margin-right:4px"></span>LOW ${sev.LOW}</span>` : ''}
+      </div>
+    </div>` : ''}
+
+    <!-- Defense Readiness Gauge + Top Issues side by side -->
+    <div style="display:flex;gap:20px;margin-top:20px;align-items:stretch">
+      <div class="gauge-container" style="flex:0 0 auto;margin:0">
+        <div class="gauge">
+          <svg viewBox="0 0 108 108" width="120" height="120">
+            <circle class="gauge-bg" cx="54" cy="54" r="48" />
+            <circle class="gauge-fill" cx="54" cy="54" r="48"
+              stroke="${readinessColor}"
+              stroke-dasharray="${circumference}"
+              stroke-dashoffset="${offset}" />
+          </svg>
+          <div class="gauge-text" style="color:${readinessColor}">${readiness}</div>
+        </div>
+        <div class="gauge-info">
+          <div class="gauge-title">Defense Readiness</div>
+          <div class="gauge-detail">
+            ${readiness >= 75
+              ? '<strong>Strong</strong> — most arguments passed QA.'
+              : readiness >= 50
+              ? '<strong>Moderate</strong> — some arguments need work.'
+              : '<strong>Weak</strong> — critical arguments need revision.'
+            }
+            ${s.weakest_consulting_lens ? `<br><span style="font-size:11px">Weakest: ${esc(s.weakest_consulting_lens)}</span>` : ''}
+          </div>
         </div>
       </div>
+
+      ${topIssues.length > 0 ? `
+      <div class="critical-issues" style="flex:1;margin:0">
+        <div class="critical-issues-title">${SVG.alert} Top Critical Issues</div>
+        <ul class="critical-issues-list">
+          ${topIssues.map(i => `<li>${esc(i)}</li>`).join('')}
+        </ul>
+      </div>` : ''}
     </div>
 
-    ${topIssues.length > 0 ? `
-    <div class="critical-issues">
-      <div class="critical-issues-title">${SVG.alert} Top Critical Issues</div>
-      <ul class="critical-issues-list">
-        ${topIssues.map(i => `<li>${esc(i)}</li>`).join('')}
-      </ul>
+    <!-- HIGH Severity Quick Navigation -->
+    ${highItems.length > 0 ? `
+    <div style="background:var(--c-high-soft);border:1px solid var(--c-high-border);border-radius:var(--radius-md);padding:16px 20px;margin-top:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--c-high);margin-bottom:10px">${SVG.flag} HIGH Severity Items (${highItems.length})</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${highItems.map(h => `
+        <div style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 10px;border-radius:var(--radius-sm);transition:background 0.15s"
+          onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background=''"
+          onclick="document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.tab-btn[data-tab=findings]').classList.add('active');document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelector('.tab-pane[data-tab-pane=findings]').classList.add('active');document.querySelectorAll('.sub-tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.sub-tab-btn[data-subtab=f-items]').classList.add('active');document.querySelectorAll('.sub-tab-pane').forEach(p=>p.classList.remove('active'));document.querySelector('.sub-tab-pane[data-subtab-pane=f-items]').classList.add('active');setTimeout(()=>{const el=document.getElementById('item-${esc(h.itemId)}');if(el){el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'start'})}},100)">
+          <span style="font-size:11px;font-weight:700;color:var(--c-high);min-width:60px">${esc(h.findingId)}</span>
+          <span style="font-size:12px;color:var(--c-text);flex:1;line-height:1.4">${esc((h.title || '').substring(0, 80))}${(h.title || '').length > 80 ? '...' : ''}</span>
+          <span style="font-size:11px;color:var(--c-text-muted)">${esc(h.itemTitle)}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Decision Chain Warning -->
+    ${ds.decision_chain_warning ? `
+    <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:var(--radius-md);padding:14px 18px;margin-top:16px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#7c3aed;margin-bottom:4px">${SVG.alert} Decision Chain Warning</div>
+      <div style="font-size:13px;color:#581c87;line-height:1.7">${esc(ds.decision_chain_warning)}</div>
     </div>` : ''}
   </section>`;
 
@@ -1581,9 +1853,10 @@ function renderQASummary(data) {
           }
         });
         const hasCriteria = keys.some(k => criteriaAvgs[k].count > 0);
-        // Build criteria bar chart HTML
+        // Build criteria radar + bar chart HTML
         let criteriaHTML = '';
         if (hasCriteria) {
+          criteriaHTML = renderFirmRadar(criteriaAvgs, keys, criteriaLabels);
           criteriaHTML = '<div style="margin:16px 0"><div style="font-size:12px;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px">Criteria Breakdown</div>';
           keys.forEach(k => {
             const avg = criteriaAvgs[k].count ? Math.round(criteriaAvgs[k].sum / criteriaAvgs[k].count) : 0;
@@ -1647,6 +1920,62 @@ function renderQASummary(data) {
   </section>`;
 }
 
+// ===== Input Content =====
+function renderInput(data) {
+  const input = data.preprocessed_input || '';
+  if (!input) return '<div style="padding:40px;text-align:center;color:var(--c-text-muted)">No input data available.</div>';
+  // Simple markdown-to-HTML conversion
+  function mdToHtml(md) {
+    let html = esc(md);
+    // Headers
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    // Bold and italic
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // Code blocks
+    html = html.replace(/```[\s\S]*?```/g, m => '<pre>' + m.slice(3, -3) + '</pre>');
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Lists
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+    // Horizontal rules
+    html = html.replace(/^---$/gm, '<hr>');
+    // Blockquotes
+    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+    // Tables (basic)
+    html = html.replace(/\|(.+)\|\n\|[-| ]+\|\n((\|.+\|\n?)+)/g, (m, header, bodyBlock) => {
+      const ths = header.split('|').filter(c => c.trim()).map(c => '<th>' + c.trim() + '</th>').join('');
+      const rows = bodyBlock.trim().split('\n').map(row => {
+        const tds = row.split('|').filter(c => c.trim()).map(c => '<td>' + c.trim() + '</td>').join('');
+        return '<tr>' + tds + '</tr>';
+      }).join('');
+      return '<table><thead><tr>' + ths + '</tr></thead><tbody>' + rows + '</tbody></table>';
+    });
+    // Line breaks (preserve double newlines as paragraphs)
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = '<p>' + html + '</p>';
+    // Clean up empty paragraphs
+    html = html.replace(/<p>\s*<\/p>/g, '');
+    html = html.replace(/<p>(<h[123]>)/g, '$1');
+    html = html.replace(/(<\/h[123]>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<ul>)/g, '$1');
+    html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<table>)/g, '$1');
+    html = html.replace(/(<\/table>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<pre>)/g, '$1');
+    html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<blockquote>)/g, '$1');
+    html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+    return html;
+  }
+  return `
+  <div class="section-header"><h2>Input Deliverable</h2><span class="badge badge-type">Preprocessed Content</span></div>
+  <div class="input-content">${mdToHtml(input)}</div>`;
+}
+
 // ===== Warning Banners =====
 function renderWarnings(data) {
   const warnings = [];
@@ -1692,6 +2021,109 @@ function renderStructuralCriticisms(data) {
       </div>
     </div>`;
   }).join('')}</div>`;
+}
+
+// ===== Gap Analysis =====
+function renderGaps(data) {
+  const gaps = data.gaps || [];
+  const gs = data.gap_summary || {};
+  if (!gaps.length) return '';
+
+  const sevClass = s => (s || '').toLowerCase().replace(/_/g, '-');
+
+  return `
+  <div class="section-header"><h2>Gap Analysis</h2><span class="badge badge-type">${gaps.length} gaps found</span></div>
+  <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+    <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-md);padding:16px 20px;flex:1;min-width:200px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--c-text-muted);margin-bottom:4px">Completeness Score</div>
+      <div style="font-size:32px;font-weight:800;color:${(gs.completeness_score||0) >= 70 ? 'var(--c-pass)' : (gs.completeness_score||0) >= 40 ? 'var(--c-medium)' : 'var(--c-high)'}">${gs.completeness_score || '?'}<span style="font-size:14px;font-weight:600;color:var(--c-text-muted)">/100</span></div>
+    </div>
+    <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-md);padding:16px 20px;flex:2;min-width:300px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--c-text-muted);margin-bottom:4px">Most Critical Gap</div>
+      <div style="font-size:13px;line-height:1.7;color:var(--c-text)">${esc(gs.most_critical_gap || '')}</div>
+    </div>
+  </div>
+  <div id="gaps-container">
+    ${gaps.map(g => `
+    <div class="gap-card" id="gap-${esc(g.id)}">
+      <div class="gap-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="item-card-toggle">${SVG.chevron}</div>
+        <span class="gap-severity ${sevClass(g.severity)}">${esc(g.severity)}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--c-text-muted)">${esc(g.id)}</span>
+        <span style="font-size:11px;padding:2px 8px;border-radius:var(--radius-full);background:var(--c-bg);color:var(--c-text-secondary);font-weight:600">${esc(g.dimension)}</span>
+        <span style="flex:1;font-size:13px;font-weight:600;color:var(--c-text)">${esc(g.title)}</span>
+      </div>
+      <div class="gap-card-body">
+        <div class="gap-detail">
+          <div class="gap-detail-label">Description</div>
+          <div class="gap-detail-content">${esc(g.description)}</div>
+        </div>
+        ${g.expected_content ? `<div class="gap-detail">
+          <div class="gap-detail-label">Expected Content</div>
+          <div class="gap-detail-content">${esc(g.expected_content)}</div>
+        </div>` : ''}
+        ${g.impact_of_absence ? `<div class="gap-detail">
+          <div class="gap-detail-label">Impact of Absence</div>
+          <div class="gap-detail-content" style="color:var(--c-high)">${esc(g.impact_of_absence)}</div>
+        </div>` : ''}
+        ${g.recommendation ? `<div class="gap-detail">
+          <div class="gap-detail-label">Recommendation</div>
+          <div class="gap-detail-content" style="color:var(--c-pass)">${esc(g.recommendation)}</div>
+        </div>` : ''}
+        ${g.related_items && g.related_items.length ? `<div style="margin-top:8px;font-size:11px;color:var(--c-text-muted)">Related: ${g.related_items.map(r => esc(r)).join(', ')}</div>` : ''}
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ===== Decision Recommendations =====
+function renderDecisions(data) {
+  const decisions = data.decision_recommendations || [];
+  const ds = data.decision_summary || {};
+  if (!decisions.length) return '';
+
+  const urgClass = u => (u || '').toLowerCase();
+
+  return `
+  <div class="section-header"><h2>Decision Points</h2><span class="badge badge-type">${decisions.length} undecided</span></div>
+  ${ds.decision_chain_warning ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:13px;color:#991b1b;line-height:1.7">${SVG.alert} <strong>Decision Chain Warning:</strong> ${esc(ds.decision_chain_warning)}</div>` : ''}
+  <div id="decisions-container">
+    ${decisions.map(d => `
+    <div class="decision-card" id="decision-${esc(d.id)}">
+      <div class="decision-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="item-card-toggle">${SVG.chevron}</div>
+        <span class="urgency-badge ${urgClass(d.urgency)}">${esc(d.urgency)}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--c-text-muted)">${esc(d.id)}</span>
+        <span style="flex:1;font-size:13px;font-weight:600;color:var(--c-text)">${esc(d.decision_point)}</span>
+      </div>
+      <div class="decision-card-body">
+        ${d.source_text ? `<div style="background:var(--c-bg);border-left:3px solid var(--c-medium);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--c-text-secondary);font-style:italic">${esc(d.source_text)}</div>` : ''}
+        ${d.urgency_rationale ? `<div style="font-size:13px;color:var(--c-text-secondary);margin-bottom:16px;line-height:1.7">${esc(d.urgency_rationale)}</div>` : ''}
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--c-text-muted);margin-bottom:10px">Options</div>
+        ${(d.options || []).map(opt => `
+        <div class="option-card${d.recommended_option === opt.id ? ' recommended' : ''}">
+          <div class="option-header">
+            <span class="option-label">${esc(opt.label)}</span>
+            ${d.recommended_option === opt.id ? '<span style="padding:2px 8px;border-radius:var(--radius-full);background:var(--c-pass);color:white;font-size:10px;font-weight:700">RECOMMENDED</span>' : ''}
+            ${opt.risk_level ? `<span style="padding:2px 8px;border-radius:var(--radius-full);background:var(--c-bg);font-size:10px;font-weight:600;color:var(--c-text-muted)">Risk: ${esc(opt.risk_level)}</span>` : ''}
+          </div>
+          <div style="font-size:13px;color:var(--c-text-secondary);margin-bottom:8px;line-height:1.6">${esc(opt.description)}</div>
+          <div class="pros-cons">
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--c-pass);margin-bottom:4px">Pros</div>
+              ${(opt.pros || []).map(p => `<div class="pros-item">${esc(p)}</div>`).join('')}
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--c-high);margin-bottom:4px">Cons</div>
+              ${(opt.cons || []).map(c => `<div class="cons-item">${esc(c)}</div>`).join('')}
+            </div>
+          </div>
+          ${opt.estimated_effort ? `<div style="margin-top:8px;font-size:11px;color:var(--c-text-muted)">Effort: ${esc(opt.estimated_effort)}</div>` : ''}
+        </div>`).join('')}
+        ${d.recommendation ? `<div style="margin-top:14px;background:var(--c-accent-soft);border:1px solid #bfdbfe;border-radius:var(--radius-md);padding:12px 16px;font-size:13px;color:var(--c-text);line-height:1.7"><strong>Recommendation:</strong> ${esc(d.recommendation)}</div>` : ''}
+      </div>
+    </div>`).join('')}
+  </div>`;
 }
 
 // ===== Radar Chart =====
@@ -1770,6 +2202,40 @@ function renderRadarChart(data) {
   </div>`;
 }
 
+// ===== Per-Firm Radar Chart =====
+function renderFirmRadar(criteriaAvgs, keys, criteriaLabelsMap) {
+  const vals = keys.map(k => criteriaAvgs[k].count ? Math.round(criteriaAvgs[k].sum / criteriaAvgs[k].count) : 0);
+  if (vals.every(v => v === 0)) return '';
+  const labels = keys.map(k => criteriaLabelsMap[k] || k);
+  const n = keys.length;
+  const cx = 130, cy = 130, r = 95;
+  const angles = keys.map((_, i) => (Math.PI * 2 * i / n) - Math.PI / 2);
+  function polar(angle, radius) { return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)]; }
+  let gridLines = '';
+  [20,40,60,80,100].forEach(pct => {
+    const rr = r * pct / 100;
+    const pts = angles.map(a => polar(a, rr).join(',')).join(' ');
+    gridLines += '<polygon points="' + pts + '" fill="none" stroke="#e2e8f0" stroke-width="1"/>';
+  });
+  angles.forEach(a => {
+    const [x,y] = polar(a, r);
+    gridLines += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x + '" y2="' + y + '" stroke="#e2e8f0" stroke-width="1"/>';
+  });
+  const dataPts = vals.map((v,i) => polar(angles[i], r * v / 100).join(',')).join(' ');
+  let labelEls = '';
+  labels.forEach((label, i) => {
+    const [x,y] = polar(angles[i], r + 18);
+    const anchor = x < cx - 5 ? 'end' : x > cx + 5 ? 'start' : 'middle';
+    labelEls += '<text x="' + x + '" y="' + y + '" text-anchor="' + anchor + '" font-size="11" font-weight="600" fill="#64748b" font-family="Inter, sans-serif">' + label + '</text>';
+    labelEls += '<text x="' + x + '" y="' + (y+13) + '" text-anchor="' + anchor + '" font-size="11" fill="#94a3b8" font-family="Inter, sans-serif">' + vals[i] + '</text>';
+  });
+  return '<div style="display:flex;justify-content:center;margin:16px 0"><svg viewBox="0 0 260 260" width="260" height="260">' +
+    gridLines +
+    '<polygon points="' + dataPts + '" fill="rgba(59,130,246,0.15)" stroke="var(--c-accent)" stroke-width="2"/>' +
+    vals.map((v,i) => { const [x,y] = polar(angles[i], r*v/100); return '<circle cx="'+x+'" cy="'+y+'" r="3.5" fill="var(--c-accent)"/>'; }).join('') +
+    labelEls + '</svg></div>';
+}
+
 // ===== SVG Icons =====
 const SVG = {
   chevron: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
@@ -1784,9 +2250,11 @@ const SVG = {
   brain: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>'
 };
 
-// ===== Dismiss State =====
-const dismissedItems = new Set(JSON.parse(localStorage.getItem('jcd_dismissed') || '[]'));
-function saveDismissed() { localStorage.setItem('jcd_dismissed', JSON.stringify([...dismissedItems])); }
+// ===== Dismiss State (scoped per report by generated_at timestamp) =====
+const reportId = (REPORT_DATA && REPORT_DATA.metadata && REPORT_DATA.metadata.generated_at) || 'default';
+const dismissKey = 'jcd_dismissed_' + reportId;
+const dismissedItems = new Set(JSON.parse(localStorage.getItem(dismissKey) || '[]'));
+function saveDismissed() { localStorage.setItem(dismissKey, JSON.stringify([...dismissedItems])); }
 
 // ===== Main Render =====
 function render(data) {
@@ -1807,6 +2275,10 @@ function render(data) {
   // Update tab counts
   const findingsCount = (data.items || []).length + (data.structural_criticisms || []).length;
   document.getElementById('tab-count-findings').textContent = findingsCount;
+  const gapsCount = (data.gaps || []).length;
+  const decisionsCount = (data.decision_recommendations || []).length;
+  document.getElementById('tab-count-gaps').textContent = gapsCount;
+  document.getElementById('tab-count-decisions').textContent = decisionsCount;
 
   // Tab: Overview
   let html = `<div class="tab-pane active" data-tab-pane="overview">`;
@@ -1814,16 +2286,66 @@ function render(data) {
   html += renderSummary(data);
   html += `</div>`;
 
-  // Tab: Findings
+  // Tab: Findings — with sub-tabs for Items, Structural, No Issues
+  const sevOrder = { HIGH: 0, UNDECIDED: 1, MEDIUM: 2, LOW: 3 };
+  const itemsWithFindings = (data.items || []).filter(item => (item.findings || []).length > 0)
+    .sort((a, b) => {
+      const maxA = (a.findings || []).reduce((m, f) => Math.min(m, sevOrder[f.severity] ?? 9), 9);
+      const maxB = (b.findings || []).reduce((m, f) => Math.min(m, sevOrder[f.severity] ?? 9), 9);
+      return maxA - maxB;
+    });
+  const itemsNoFindings = (data.items || []).filter(item => (item.findings || []).length === 0);
+  const structCount = (data.structural_criticisms || []).length;
   html += `<div class="tab-pane" data-tab-pane="findings">`;
-  html += `<div class="section-header" id="section-items"><h2>Item Analysis</h2><span class="badge badge-type" id="items-count-badge">${(data.items || []).length} items</span></div>`;
-  html += `<div id="items-container">${(data.items || []).map(item => renderItem(item)).join('')}</div>`;
+  html += `<div class="sub-tab-bar" id="findings-sub-tabs">
+    <button class="sub-tab-btn active" data-subtab="f-items">${SVG.flag} Items <span class="sub-tab-count">${itemsWithFindings.length}</span></button>
+    <button class="sub-tab-btn" data-subtab="f-structural">${SVG.alert} Structural <span class="sub-tab-count">${structCount}</span></button>
+    <button class="sub-tab-btn" data-subtab="f-clear">${SVG.check} No Issues <span class="sub-tab-count">${itemsNoFindings.length}</span></button>
+  </div>`;
+  // Sub-pane: Items
+  html += `<div class="sub-tab-pane active" data-subtab-pane="f-items">`;
+  html += `<div class="section-header" id="section-items"><h2>Item Analysis</h2><span class="badge badge-type">${itemsWithFindings.length} items with findings</span></div>`;
+  html += `<div id="items-container">${itemsWithFindings.map(item => renderItem(item)).join('')}</div>`;
+  html += `</div>`;
+  // Sub-pane: Structural
+  html += `<div class="sub-tab-pane" data-subtab-pane="f-structural">`;
   html += renderStructuralCriticisms(data);
+  if (!structCount) html += `<div style="padding:40px;text-align:center;color:var(--c-text-muted)">No structural criticisms found.</div>`;
+  html += `</div>`;
+  // Sub-pane: No Issues
+  html += `<div class="sub-tab-pane" data-subtab-pane="f-clear">`;
+  if (itemsNoFindings.length > 0) {
+    html += `<div class="section-header"><h2>No Issues Found</h2><span class="badge" style="background:var(--c-pass-soft);color:#065f46">${itemsNoFindings.length} items</span></div>`;
+    html += itemsNoFindings.map(item => `<div class="no-issues-item">
+      <span class="no-issues-check">${SVG.check}</span>
+      <span style="font-weight:600;color:var(--c-text-muted);font-size:11px">${esc(item.id)}</span>
+      <span>${esc(item.title)}</span>
+      <span style="font-size:11px;color:var(--c-text-muted);margin-left:auto">${esc(item.section || '')}</span>
+    </div>`).join('');
+  } else {
+    html += `<div style="padding:40px;text-align:center;color:var(--c-text-muted)">All items have findings.</div>`;
+  }
+  html += `</div>`;
   html += `</div>`;
 
   // Tab: QA Report
   html += `<div class="tab-pane" data-tab-pane="qa">`;
   html += renderQASummary(data);
+  html += `</div>`;
+
+  // Tab: Gaps
+  html += `<div class="tab-pane" data-tab-pane="gaps">`;
+  html += renderGaps(data);
+  html += `</div>`;
+
+  // Tab: Decisions
+  html += `<div class="tab-pane" data-tab-pane="decisions">`;
+  html += renderDecisions(data);
+  html += `</div>`;
+
+  // Tab: Input
+  html += `<div class="tab-pane" data-tab-pane="input">`;
+  html += renderInput(data);
   html += `</div>`;
 
   document.getElementById('content-area').innerHTML = html;
@@ -1834,12 +2356,12 @@ function render(data) {
     if (card) card.classList.add('dismissed');
   });
 
-  // Populate sidebar navigation
+  // Populate sidebar navigation (only items with findings)
   const navItems = document.getElementById('nav-items');
-  navItems.innerHTML = (data.items || []).map(item => {
+  navItems.innerHTML = (data.items || []).filter(item => (item.findings || []).length > 0).map(item => {
     const findings = item.findings || [];
     const maxSev = findings.reduce((max, f) => {
-      const order = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+      const order = { HIGH: 3, UNDECIDED: 2, MEDIUM: 2, LOW: 1 };
       return (order[f.severity] || 0) > (order[max] || 0) ? f.severity : max;
     }, 'LOW');
     const sevColor = maxSev === 'HIGH' ? 'var(--c-high)' : maxSev === 'MEDIUM' ? 'var(--c-medium)' : maxSev === 'UNDECIDED' ? '#8b5cf6' : 'var(--c-low)';
@@ -1920,6 +2442,20 @@ document.getElementById('tab-bar').addEventListener('click', e => {
   if (pane) pane.classList.add('active');
 });
 
+// ===== Sub-tab Switching (Findings) =====
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.sub-tab-btn');
+  if (!btn) return;
+  const bar = btn.closest('.sub-tab-bar');
+  const container = bar.parentElement;
+  const subtab = btn.dataset.subtab;
+  bar.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  container.querySelectorAll('.sub-tab-pane').forEach(p => p.classList.remove('active'));
+  const pane = container.querySelector(`.sub-tab-pane[data-subtab-pane="${subtab}"]`);
+  if (pane) pane.classList.add('active');
+});
+
 // ===== Interactivity =====
 
 // Sidebar navigation click
@@ -1940,6 +2476,21 @@ document.getElementById('sidebar-nav').addEventListener('click', e => {
       document.querySelector('.tab-btn[data-tab="qa"]').classList.add('active');
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       document.querySelector('.tab-pane[data-tab-pane="qa"]').classList.add('active');
+    } else if (target.startsWith('gap-') || target.startsWith('gaps')) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="gaps"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="gaps"]').classList.add('active');
+    } else if (target.startsWith('decision-') || target.startsWith('decisions')) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="decisions"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="decisions"]').classList.add('active');
+    } else if (target === 'input-content') {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="input"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="input"]').classList.add('active');
     } else if (target === 'summary') {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('.tab-btn[data-tab="overview"]').classList.add('active');

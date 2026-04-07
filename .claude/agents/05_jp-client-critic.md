@@ -56,7 +56,7 @@ Write findings to `{WORKSPACE}/02_critic_findings.json`:
   "review_summary": {
     "total_items_reviewed": "number",
     "total_findings": "number",
-    "severity_breakdown": {"HIGH": 0, "MEDIUM": 0, "LOW": 0},
+    "severity_breakdown": {"HIGH": 0, "MEDIUM": 0, "LOW": 0, "UNDECIDED": 0},
     "type_breakdown": {"MECE_GAP": 0, "OBJECTIVITY": 0, ...},
     "overall_risk_assessment": "string — overall assessment of the deliverable's vulnerability",
     "top_3_critical_issues": ["string — the 3 most dangerous findings"]
@@ -66,7 +66,8 @@ Write findings to `{WORKSPACE}/02_critic_findings.json`:
       "id": "FIND-001",
       "item_id": "ITEM-001",
       "criticism_type": "MECE_GAP",
-      "severity": "HIGH|MEDIUM|LOW",
+      "severity": "HIGH|MEDIUM|LOW|UNDECIDED",
+      "is_undecided": "boolean — true if this is a pending decision point, not a defect",
       "criticism": "string — the criticism stated clearly in {LANGUAGE} (the user's output language)",
       "criticism_jp": "string — how a Japanese client would phrase this in Japanese (ALWAYS Japanese regardless of output language, used verbatim in client meetings)",
       "criticism_detail": "string — detailed explanation of why this is a problem, in {LANGUAGE}",
@@ -126,13 +127,17 @@ For each item, apply the full criticism taxonomy:
 - Do dependencies hold up?
 - Is the overall narrative coherent?
 
-### Step 6: Severity Rating
+### Step 6: Undecided Item Tagging
+If the orchestrator provides `{WORKSPACE}/05_decision_recommendations.json`, read it. For each finding where the underlying item contains undecided/pending elements (要検討, 未確定, 未定義, TBD, （仮）, ?), set `"severity": "UNDECIDED"` and add `"is_undecided": true`. These are NOT defects — they are open decision points. The criticism should focus on why the decision must be made, not on the content being wrong.
+
+### Step 7: Severity Rating
 Rate each finding:
 - **HIGH**: Would likely cause deliverable rejection or major revision demand
 - **MEDIUM**: Would draw pointed questions and require satisfactory answers
 - **LOW**: Would be noted as improvement area but wouldn't block approval
+- **UNDECIDED**: Item contains pending decisions (要検討, 未確定, etc.) — not a defect but a decision gap that blocks approval
 
-### Step 7: Prioritize
+### Step 8: Prioritize
 Rank findings by severity and cascade impact. The top 3 critical issues should be the ones most likely to derail the deliverable.
 
 ## Japanese Client Behavior Patterns to Apply

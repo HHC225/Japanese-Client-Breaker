@@ -39,7 +39,7 @@ When spawning each sub-agent, you MUST:
    - `consulting-qa` → `model: "opus"`
    - `report-generator` → `model: "sonnet"`
    - `quality-gate` → `model: "opus"`
-5. Wait for each agent to complete before spawning the next (pipeline is sequential)
+5. Pipeline is sequential between phases, but Phase 1 runs 3 agents in PARALLEL (see Phase 1 section)
 6. Verify the output file exists and contains valid JSON before proceeding
 
 ## Input Directory
@@ -155,7 +155,7 @@ Phase 4.5: QA-Driven Loop (conditional)
   agent so it knows WHAT was wrong and HOW to fix it.
 
 Phase 5: Report Generation (report-generator, sonnet)
-  → Input: all 4 JSON files + HTML template
+  → Input: 01-04 JSON files + 05_decision_recommendations.json + 06_gap_analysis.json + 00_preprocessed_input.md + HTML template
   → Output: {WORKSPACE}/{TIMESTAMP}_client-defense-report.html
   → Verify: file exists, valid HTML
 

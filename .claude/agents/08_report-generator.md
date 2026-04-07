@@ -28,6 +28,8 @@ Read all workspace files:
 - `{WORKSPACE}/02_critic_findings.json`
 - `{WORKSPACE}/03_strategist_scenarios.json`
 - `{WORKSPACE}/04_qa_results.json`
+- `{WORKSPACE}/05_decision_recommendations.json` (if exists)
+- `{WORKSPACE}/06_gap_analysis.json` (if exists)
 
 Also read the HTML template from the skill's assets directory (the orchestrator will provide the exact path).
 
@@ -43,7 +45,7 @@ The report generator should:
 
 ## Data Merge Algorithm
 
-Build `REPORT_DATA` from the 4 upstream JSON files step-by-step:
+Build `REPORT_DATA` from the upstream JSON files step-by-step:
 
 ### Step 1: Build `metadata` and `summary`
 - `metadata.title` ← `01_analyst_items.deliverable_title`
@@ -76,6 +78,19 @@ For each entry in `02_critic_findings.structural_criticisms`:
 3. Enrich with `qa_reviews`, `overall_qa_grade`, `qa_verdict` from `04_qa_results.reviews` where `finding_id` matches
 4. Rename strategist field `expected_client_rebuttal` to `client_rebuttal` in argument tree levels for template compatibility
 
+### Step 4: Build `preprocessed_input`
+Read `{WORKSPACE}/00_preprocessed_input.md` and store its raw text content as `preprocessed_input` (a single string field). This allows the report to show the original input deliverable.
+
+### Step 5: Build `gaps[]`
+If `06_gap_analysis.json` exists:
+1. Copy `summary` as `gap_summary` (includes `total_gaps`, `severity_breakdown`, `completeness_score`, `most_critical_gap`)
+2. Copy all entries from `gaps[]` array with fields: `id`, `dimension`, `severity`, `title`, `description`, `expected_content`, `impact_of_absence`, `related_items`, `recommendation`
+
+### Step 6: Build `decision_recommendations[]`
+If `05_decision_recommendations.json` exists:
+1. Copy `summary` as `decision_summary` (includes `total_undecided`, `urgency_breakdown`, `decision_chain_warning`)
+2. Copy all entries from `undecided_items[]` array with fields: `id`, `item_id`, `source_text`, `decision_point`, `urgency`, `urgency_rationale`, `options[]` (each with `id`, `label`, `description`, `pros`, `cons`, `prerequisites`, `risk_level`, `estimated_effort`), `recommendation`, `recommended_option`
+
 ## Report Data Structure
 
 Merge all upstream data into this structure:
@@ -86,12 +101,14 @@ Merge all upstream data into this structure:
     "title": "string — deliverable title",
     "generated_at": "string — ISO timestamp",
     "deliverable_type": "string",
-    "deliverable_summary": "string"
+    "deliverable_summary": "string",
+    "language": "string"
   },
+  "preprocessed_input": "string — raw markdown content of 00_preprocessed_input.md",
   "summary": {
     "total_items": "number",
     "total_findings": "number",
-    "severity_breakdown": {"HIGH": 0, "MEDIUM": 0, "LOW": 0},
+    "severity_breakdown": {"HIGH": 0, "MEDIUM": 0, "LOW": 0, "UNDECIDED": 0},
     "defense_readiness": "number 0-100",
     "qa_pass_rate": "number 0-100",
     "weakest_consulting_lens": "string",
@@ -147,6 +164,54 @@ Merge all upstream data into this structure:
       "overall_qa_grade": "string",
       "qa_verdict": "PASS|REVISION_NEEDED|FAIL"
     }
+  ],
+  "gap_summary": {
+    "total_gaps": "number",
+    "severity_breakdown": {"CRITICAL": 0, "IMPORTANT": 0, "NICE_TO_HAVE": 0},
+    "completeness_score": "number 0-100",
+    "most_critical_gap": "string"
+  },
+  "gaps": [
+    {
+      "id": "GAP-001",
+      "dimension": "string — STRUCTURAL|RISK|PROCESS|STAKEHOLDER|TECHNICAL",
+      "severity": "CRITICAL|IMPORTANT|NICE_TO_HAVE",
+      "title": "string",
+      "description": "string",
+      "expected_content": "string",
+      "impact_of_absence": "string",
+      "related_items": ["ITEM-XXX"],
+      "recommendation": "string"
+    }
+  ],
+  "decision_summary": {
+    "total_undecided": "number",
+    "urgency_breakdown": {"URGENT": 0, "IMPORTANT": 0, "DEFERRABLE": 0},
+    "decision_chain_warning": "string"
+  },
+  "decision_recommendations": [
+    {
+      "id": "UNDECIDED-001",
+      "item_id": "ITEM-XXX",
+      "source_text": "string — original text showing indecision",
+      "decision_point": "string",
+      "urgency": "URGENT|IMPORTANT|DEFERRABLE",
+      "urgency_rationale": "string",
+      "options": [
+        {
+          "id": "OPT-A",
+          "label": "string",
+          "description": "string",
+          "pros": ["string"],
+          "cons": ["string"],
+          "prerequisites": ["string"],
+          "risk_level": "HIGH|MEDIUM|LOW",
+          "estimated_effort": "string"
+        }
+      ],
+      "recommendation": "string",
+      "recommended_option": "string"
+    }
   ]
 }
 ```
@@ -201,7 +266,7 @@ When injecting REPORT_DATA into the HTML template:
 2. **Script tag safety**: Any `</script>` in string values will break the HTML. Replace with `<\/script>` (case-insensitive).
 3. **JSON escaping**: All strings must be properly escaped — `\\` for backslashes, `\"` for quotes, `\n` for newlines.
 4. **Compact output**: Do NOT pretty-print. Use a single-line JSON blob.
-5. **Post-write validation**: After writing, run `node .claude/skills/06_html-report-generation/scripts/validate-report.js {output_path}` and fix any errors before declaring success.
+5. **Post-write validation**: After writing, run `node .claude/skills/08_html-report-generation/scripts/validate-report.js {output_path}` and fix any errors before declaring success.
 
 ## Error Handling
 
