@@ -28,10 +28,13 @@ The orchestrator agent runs a 5-stage pipeline, spawning each sub-agent sequenti
 | **orchestrator** | `.claude/agents/00_orchestrator.md` | **opus** | Pipeline coordination, QA gating, revision loop | jp-client-defender | Final report |
 | file-preprocessor | `.claude/agents/01_file-preprocessor.md` | sonnet | Convert Excel/PDF/PPT/Word → Markdown | file-preprocessing | `00_preprocessed_input.md` |
 | deliverable-analyst | `.claude/agents/02_deliverable-analyst.md` | sonnet | Parse deliverable into items | deliverable-analysis | `01_analyst_items.json` |
-| jp-client-critic | `.claude/agents/03_jp-client-critic.md` | opus | Critique from JP client perspective | jp-client-critique | `02_critic_findings.json` |
-| persuasion-strategist | `.claude/agents/04_persuasion-strategist.md` | opus | Build argument trees | persuasion-scenarios | `03_strategist_scenarios.json` |
-| consulting-qa | `.claude/agents/05_consulting-qa.md` | opus | Validate through Big 5 lenses | consulting-qa | `04_qa_results.json` |
-| report-generator | `.claude/agents/06_report-generator.md` | sonnet | Generate HTML report | html-report-generation | `{TIMESTAMP}_client-defense-report.html` |
+| gap-analyzer | `.claude/agents/03_gap-analyzer.md` | **opus** | Detect missing elements (parallel with analyst) | gap-analysis | `06_gap_analysis.json` |
+| decision-advisor | `.claude/agents/04_decision-advisor.md` | **opus** | Analyze undecided items, recommend direction | decision-analysis | `05_decision_recommendations.json` |
+| jp-client-critic | `.claude/agents/05_jp-client-critic.md` | opus | Critique from JP client perspective | jp-client-critique | `02_critic_findings.json` |
+| persuasion-strategist | `.claude/agents/06_persuasion-strategist.md` | opus | Build argument trees | persuasion-scenarios | `03_strategist_scenarios.json` |
+| consulting-qa | `.claude/agents/07_consulting-qa.md` | opus | Validate through Big 5 lenses | consulting-qa | `04_qa_results.json` |
+| report-generator | `.claude/agents/08_report-generator.md` | sonnet | Generate HTML report | html-report-generation | `{TIMESTAMP}_client-defense-report.html` |
+| quality-gate | `.claude/agents/09_quality-gate.md` | **opus** | Internal QA after each phase | quality-gate | `09_quality_gate_{phase}.json` |
 
 ## Workspace Variable
 
@@ -90,9 +93,11 @@ Agent(
    - Default: `{WORKSPACE}/{TIMESTAMP}_client-defense-report.html`
    - If user specifies a path, use that instead
 
-### Phase 1: Analysis (Deliverable Analyst)
+### Phase 1: Analysis + Gap Detection (PARALLEL)
 
-Launch the deliverable-analyst agent:
+Launch BOTH agents simultaneously using parallel Agent calls. They have no dependency on each other.
+
+**Phase 1A: Deliverable Analyst**
 
 ```
 Agent(
@@ -108,7 +113,82 @@ Agent(
 )
 ```
 
-**Completion check**: Verify `{WORKSPACE}/01_analyst_items.json` exists and is valid JSON.
+**Phase 1B: Gap Analyzer** (runs in parallel with 1A)
+
+```
+Agent(
+  description: "Detect missing elements",
+  model: "opus",
+  prompt: "You are the Gap Analyzer. Read your agent definition at .claude/agents/03_gap-analyzer.md and your skill at .claude/skills/03_gap-analysis/skill.md.
+
+  Read the preprocessed deliverable at {WORKSPACE}/00_preprocessed_input.md. Also read any project context files in input/details/ if they exist.
+
+  Identify what is MISSING from the deliverable — gaps in structure, stakeholder coverage, scenarios, risks, evidence, and regulatory considerations. Do NOT criticize what IS there — only flag what SHOULD BE there but ISN'T.
+
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content MUST be in {LANGUAGE}. JSON field names stay in English.
+
+  Output MUST be valid JSON. Write to {WORKSPACE}/06_gap_analysis.json."
+)
+```
+
+**Phase 1C: Decision Advisor** (runs in parallel with 1A and 1B)
+
+```
+Agent(
+  description: "Analyze undecided items",
+  model: "opus",
+  prompt: "You are the Decision Advisor. Read your agent definition at .claude/agents/04_decision-advisor.md and your skill at .claude/skills/04_decision-analysis/skill.md.
+
+  Read the preprocessed deliverable at {WORKSPACE}/00_preprocessed_input.md.
+
+  Identify ALL items marked with 要検討, ？, 未確定, TBD, 検討中, （仮）, or similar undecided markers. For each, analyze options and recommend a direction.
+
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content MUST be in {LANGUAGE}. JSON field names stay in English.
+
+  Output MUST be valid JSON. Write to {WORKSPACE}/05_decision_recommendations.json."
+)
+```
+
+**Completion check**: Verify ALL THREE files exist and are valid JSON.
+
+### Phase 1-QG: Quality Gate (run 3 quality gates in parallel)
+
+First, verify all 3 JSON files exist and parse correctly (simple script-level check by orchestrator).
+Then run 3 consultant QA reviews in parallel:
+
+```
+Agent(
+  description: "Quality gate Phase 1A",
+  model: "opus",
+  prompt: "You are the Quality Gate. Read .claude/agents/09_quality-gate.md and .claude/skills/09_quality-gate/skill.md.
+  Review {WORKSPACE}/01_analyst_items.json — check if the analyst extracted the RIGHT items at the RIGHT granularity.
+  Also read {WORKSPACE}/00_preprocessed_input.md to verify claims are accurate.
+  Focus on: premise validity, extraction quality, implicit assumptions.
+  Write results to {WORKSPACE}/09_quality_gate_1a.json. Output MUST be valid JSON."
+)
+Agent(
+  description: "Quality gate Phase 1B",
+  model: "opus",
+  prompt: "You are the Quality Gate. Read .claude/agents/09_quality-gate.md and .claude/skills/09_quality-gate/skill.md.
+  Review {WORKSPACE}/06_gap_analysis.json — check if the identified gaps are REAL and the severity is calibrated correctly for Japanese banking.
+  Also read {WORKSPACE}/00_preprocessed_input.md to verify the gaps aren't actually addressed in the deliverable.
+  Focus on: gap validity, false positives, missed critical gaps, severity calibration.
+  Write results to {WORKSPACE}/09_quality_gate_1b.json. Output MUST be valid JSON."
+)
+Agent(
+  description: "Quality gate Phase 1C",
+  model: "opus",
+  prompt: "You are the Quality Gate. Read .claude/agents/09_quality-gate.md and .claude/skills/09_quality-gate/skill.md.
+  Review {WORKSPACE}/05_decision_recommendations.json — check if ALL undecided markers were caught and recommendations are defensible.
+  Also read {WORKSPACE}/00_preprocessed_input.md to verify no undecided items were missed.
+  Focus on: completeness, recommendation soundness, option balance, dependency logic.
+  Write results to {WORKSPACE}/09_quality_gate_1c.json. Output MUST be valid JSON."
+)
+```
+
+For each REVISE verdict: re-run the failing agent with quality gate's `fix_direction` feedback. Max 1 retry per agent. If 2nd REVISE, proceed with warnings.
+
+After quality gates pass, extract undecided item IDs from Phase 1C to pass to Phase 2.
 
 ### Phase 2: Critique (JP Client Critic)
 
@@ -118,11 +198,20 @@ Launch the jp-client-critic agent:
 Agent(
   description: "Critique from JP client view",
   model: "opus",
-  prompt: "You are the Japanese Client Critic. Read your agent definition at .claude/agents/03_jp-client-critic.md and your skill at .claude/skills/03_jp-client-critique/skill.md. Also read the detailed reference at .claude/skills/03_jp-client-critique/references/jp-banking-client-patterns.md for comprehensive Japanese banking client patterns.
+  prompt: "You are the Japanese Client Critic. Read your agent definition at .claude/agents/05_jp-client-critic.md and your skill at .claude/skills/05_jp-client-critique/skill.md. Also read the detailed reference at .claude/skills/05_jp-client-critique/references/jp-banking-client-patterns.md for comprehensive Japanese banking client patterns.
 
   Read the analyst output from {WORKSPACE}/01_analyst_items.json and generate detailed criticisms from a Japanese banking client perspective. Write output to {WORKSPACE}/02_critic_findings.json.
 
-  Be genuinely critical. Think like a 部長 at a major Japanese bank reviewing a vendor deliverable. Find every weakness.
+  IMPORTANT — GAP ANALYSIS: Also read {WORKSPACE}/06_gap_analysis.json. Incorporate identified gaps as additional findings with type COMPREHENSIVENESS or MECE_GAP. Reference the GAP-XXX id. These represent things MISSING from the deliverable that the Gap Analyzer identified.
+
+  IMPORTANT — UNDECIDED ITEMS: Also read {WORKSPACE}/05_decision_recommendations.json. The following items are PENDING DECISIONS, not defects: [paste undecided item IDs from Phase 1.5]. For these items:
+  - Set severity to 'UNDECIDED' (NOT HIGH/MEDIUM/LOW)
+  - Set 'is_undecided' to true
+  - Reference the corresponding UNDECIDED-XXX id
+  - Do NOT treat them as defects — they are decision points being analyzed separately
+  - You may still note risks associated with the delay of these decisions
+
+  Be genuinely critical for non-undecided items. Think like a 部長 at a major Japanese bank reviewing a vendor deliverable. Find every weakness.
 
   OUTPUT LANGUAGE: {LANGUAGE}. ALL text content (criticism_detail, specific_weakness, client_psychology, cultural_context, likely_client_phrasing) MUST be in {LANGUAGE}. The criticism_jp field is ALWAYS in Japanese regardless. JSON field names stay in English.
 
@@ -132,6 +221,22 @@ Agent(
 
 **Completion check**: Verify `{WORKSPACE}/02_critic_findings.json` exists and is valid JSON.
 
+### Phase 2-QG: Quality Gate for Critic
+
+```
+Agent(
+  description: "Quality gate Phase 2",
+  model: "opus",
+  prompt: "You are the Quality Gate. Read .claude/agents/09_quality-gate.md and .claude/skills/09_quality-gate/skill.md.
+  Review {WORKSPACE}/02_critic_findings.json — check if criticisms target the RIGHT weaknesses at the RIGHT severity for Japanese banking context.
+  Also read: {WORKSPACE}/00_preprocessed_input.md (source truth), {WORKSPACE}/01_analyst_items.json, {WORKSPACE}/05_decision_recommendations.json, {WORKSPACE}/06_gap_analysis.json.
+  Focus on: Are UNDECIDED items correctly separated? Are gap findings incorporated? Is severity calibrated for banking? Are criticisms targeting real issues or nitpicking?
+  Write results to {WORKSPACE}/09_quality_gate_2.json. Output MUST be valid JSON."
+)
+```
+
+If REVISE: re-run Critic with fix_direction feedback. Max 1 retry.
+
 ### Phase 3: Persuasion (Persuasion Strategist)
 
 Launch the persuasion-strategist agent:
@@ -140,7 +245,7 @@ Launch the persuasion-strategist agent:
 Agent(
   description: "Build persuasion scenarios",
   model: "opus",
-  prompt: "You are the Persuasion Strategist. Read your agent definition at .claude/agents/04_persuasion-strategist.md and your skill at .claude/skills/04_persuasion-scenarios/skill.md. Also read the detailed argument patterns at .claude/skills/04_persuasion-scenarios/references/argument-tree-patterns.md.
+  prompt: "You are the Persuasion Strategist. Read your agent definition at .claude/agents/06_persuasion-strategist.md and your skill at .claude/skills/06_persuasion-scenarios/skill.md. Also read the detailed argument patterns at .claude/skills/06_persuasion-scenarios/references/argument-tree-patterns.md.
 
   Read the critic findings from {WORKSPACE}/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. This includes BOTH the item-level 'findings' array AND the 'structural_criticisms' array. For structural criticisms, use their id as finding_id (e.g., STRUCT-001), set item_id to 'STRUCTURAL', and output them in a separate 'structural_scenarios' array. Write output to {WORKSPACE}/03_strategist_scenarios.json.
 
@@ -154,6 +259,22 @@ Agent(
 
 **Completion check**: Verify `{WORKSPACE}/03_strategist_scenarios.json` exists and is valid JSON.
 
+### Phase 3-QG: Quality Gate for Strategist
+
+```
+Agent(
+  description: "Quality gate Phase 3",
+  model: "opus",
+  prompt: "You are the Quality Gate. Read .claude/agents/09_quality-gate.md and .claude/skills/09_quality-gate/skill.md.
+  Review {WORKSPACE}/03_strategist_scenarios.json — check if the defense strategy is sound.
+  Also read: {WORKSPACE}/00_preprocessed_input.md and {WORKSPACE}/02_critic_findings.json.
+  Focus on: Are we defending things that should be conceded? Are argument trees logically coherent? Is cultural calibration appropriate for Japanese banking? Would these arguments actually work in a real meeting?
+  Write results to {WORKSPACE}/09_quality_gate_3.json. Output MUST be valid JSON."
+)
+```
+
+If REVISE: re-run Strategist with fix_direction feedback. Max 1 retry.
+
 ### Phase 4: QA Validation (Consulting QA) — TWO-PHASE QA
 
 Launch the consulting-qa agent. QA runs in two phases:
@@ -164,14 +285,19 @@ Launch the consulting-qa agent. QA runs in two phases:
 Agent(
   description: "QA through Big 5 lenses",
   model: "opus",
-  prompt: "You are the Consulting QA Agent. Read your agent definition at .claude/agents/05_consulting-qa.md and your skill at .claude/skills/05_consulting-qa/skill.md. Also read the detailed consulting methods reference at .claude/skills/05_consulting-qa/references/big5-consulting-methods.md.
+  prompt: "You are the Consulting QA Agent. Read your agent definition at .claude/agents/07_consulting-qa.md and your skill at .claude/skills/07_consulting-qa/skill.md. Also read the detailed consulting methods reference at .claude/skills/07_consulting-qa/references/big5-consulting-methods.md.
 
   Read all upstream artifacts:
   - {WORKSPACE}/01_analyst_items.json
   - {WORKSPACE}/02_critic_findings.json
   - {WORKSPACE}/03_strategist_scenarios.json
+  - {WORKSPACE}/05_decision_recommendations.json
+  - {WORKSPACE}/06_gap_analysis.json
 
   CRITICAL: Run Phase A (Foundational Audit) FIRST.
+  Also validate:
+  - Decision recommendations: check that each recommendation is well-reasoned, options are MECE, and the recommended option is defensible. Include in output under 'decision_qa' array.
+  - Gap analysis: check that identified gaps are genuine (not false positives), severity is calibrated correctly, and recommendations are actionable. Include in output under 'gap_qa' array.
   Check if the premises, analysis, criticism direction, and defense approach are fundamentally correct.
   If Phase A fails, set the appropriate verdict (ANALYSIS_REDO, CRITIQUE_REDO, or STRATEGY_REDO)
   and write detailed foundation_issues explaining what is wrong and how to fix it.
@@ -291,9 +417,9 @@ Launch the report-generator agent:
 Agent(
   description: "Generate HTML report",
   model: "sonnet",
-  prompt: "You are the Report Generator. Read your agent definition at .claude/agents/06_report-generator.md and your skill at .claude/skills/06_html-report-generation/skill.md.
+  prompt: "You are the Report Generator. Read your agent definition at .claude/agents/08_report-generator.md and your skill at .claude/skills/08_html-report-generation/skill.md.
 
-  Read the HTML template at .claude/skills/06_html-report-generation/assets/report-template.html.
+  Read the HTML template at .claude/skills/08_html-report-generation/assets/report-template.html.
 
   Read all workspace data files:
   - {WORKSPACE}/01_analyst_items.json
@@ -307,7 +433,7 @@ Agent(
 
   OUTPUT LANGUAGE: {LANGUAGE}. The HTML template UI labels remain as-is, but the REPORT_DATA metadata.language field should be set to '{LANGUAGE}' so the template can adapt if needed.
 
-  The report must be a single, self-contained HTML file that opens in any browser without JavaScript errors. After writing, validate with: node .claude/skills/06_html-report-generation/scripts/validate-report.js [output_path]"
+  The report must be a single, self-contained HTML file that opens in any browser without JavaScript errors. After writing, validate with: node .claude/skills/08_html-report-generation/scripts/validate-report.js [output_path]"
 )
 ```
 

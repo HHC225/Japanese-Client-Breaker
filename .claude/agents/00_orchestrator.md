@@ -38,6 +38,7 @@ When spawning each sub-agent, you MUST:
    - `persuasion-strategist` → `model: "opus"`
    - `consulting-qa` → `model: "opus"`
    - `report-generator` → `model: "sonnet"`
+   - `quality-gate` → `model: "opus"`
 5. Wait for each agent to complete before spawning the next (pipeline is sequential)
 6. Verify the output file exists and contains valid JSON before proceeding
 
@@ -57,22 +58,65 @@ Phase 0: Preprocessing (file-preprocessor, sonnet)
   → Output: {WORKSPACE}/00_file_manifest.json
   → Verify: preprocessed file exists and has content
 
-Phase 1: Analysis (deliverable-analyst, sonnet)
-  → Input: {WORKSPACE}/00_preprocessed_input.md (NOT raw files)
-  → Output: {WORKSPACE}/01_analyst_items.json
-  → Verify: file exists, valid JSON, items array not empty
+Phase 1: Analysis + Gap Detection + Decision Analysis (ALL THREE PARALLEL)
+  Run these THREE agents simultaneously (no dependency between them — all read preprocessed input directly):
+
+  Phase 1A: Analyst (deliverable-analyst, sonnet)
+    → Input: {WORKSPACE}/00_preprocessed_input.md
+    → Output: {WORKSPACE}/01_analyst_items.json
+    → Extracts what IS in the deliverable
+
+  Phase 1B: Gap Analyzer (gap-analyzer, opus)
+    → Input: {WORKSPACE}/00_preprocessed_input.md
+    → Output: {WORKSPACE}/06_gap_analysis.json
+    → Identifies what is MISSING from the deliverable
+
+  Phase 1C: Decision Advisor (decision-advisor, opus)
+    → Input: {WORKSPACE}/00_preprocessed_input.md
+    → Output: {WORKSPACE}/05_decision_recommendations.json
+    → Detects 要検討/？/未確定/TBD items and provides option analysis
+    → These are NOT defects — they are pending decisions needing direction
+
+  Wait for ALL THREE to complete before proceeding.
+
+Phase 1-QG: Quality Gate for Phase 1 (quality-gate, opus)
+  → Validate ALL THREE outputs: 01_analyst_items.json, 06_gap_analysis.json, 05_decision_recommendations.json
+  → Check schema, completeness, ID patterns, cross-references
+  → Can run THREE quality gates in parallel (one per output)
+  → If FAIL: re-run the failing agent with fix instructions (max 1 retry)
+  → If 2nd FAIL: proceed with warnings
+  → Pass undecided item IDs from 1C to Phase 2
 
 Phase 2: Critique (jp-client-critic, opus)
-  → Input: 01_analyst_items.json
+  → Input: 01_analyst_items.json + 05_decision_recommendations.json + 06_gap_analysis.json
   → Output: {WORKSPACE}/02_critic_findings.json
+  → Critic receives THREE upstream inputs:
+    1. Analyst items (what IS in the deliverable)
+    2. Decision recommendations (what is UNDECIDED)
+    3. Gap analysis (what is MISSING)
+  → For gap findings: incorporate as additional COMPREHENSIVENESS/MECE_GAP findings
+  → For undecided items: tag with "is_undecided": true, severity "UNDECIDED"
   → Verify: file exists, valid JSON, findings array not empty
+
+Phase 2-QG: Quality Gate for Phase 2 (quality-gate, opus)
+  → Validate 02_critic_findings.json
+  → Cross-reference with 01_analyst_items.json (item_id validity)
+  → Cross-reference with 05_decision_recommendations.json (UNDECIDED tagging)
+  → Cross-reference with 06_gap_analysis.json (gap incorporation)
+  → If FAIL: re-run Critic with fix instructions (max 1 retry)
 
 Phase 3: Persuasion (persuasion-strategist, opus)
   → Input: 02_critic_findings.json
   → Output: {WORKSPACE}/03_strategist_scenarios.json
   → Verify: file exists, valid JSON, scenarios array not empty
 
-Phase 4: QA Validation (consulting-qa, opus) — TWO-PHASE QA
+Phase 3-QG: Quality Gate for Phase 3 (quality-gate, opus)
+  → Validate 03_strategist_scenarios.json
+  → Cross-reference with 02_critic_findings.json (all findings have scenarios)
+  → Check argument tree structure (min 3 levels, japanese_phrasing present)
+  → If FAIL: re-run Strategist with fix instructions (max 1 retry)
+
+Phase 4: Big 5 Consulting QA (consulting-qa, opus) — FOR USER DISPLAY
   → Input: 01 + 02 + 03 JSON files
   → Output: {WORKSPACE}/04_qa_results.json
   → QA runs Phase A (Foundational Audit) FIRST
