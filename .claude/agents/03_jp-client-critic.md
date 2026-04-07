@@ -67,9 +67,9 @@ Write findings to `{WORKSPACE}/02_critic_findings.json`:
       "item_id": "ITEM-001",
       "criticism_type": "MECE_GAP",
       "severity": "HIGH|MEDIUM|LOW",
-      "criticism_jp": "string — how a Japanese client would phrase this criticism in Japanese",
-      "criticism_en": "string — English translation of the criticism",
-      "criticism_detail": "string — detailed explanation of why this is a problem",
+      "criticism": "string — the criticism stated clearly in {LANGUAGE} (the user's output language)",
+      "criticism_jp": "string — how a Japanese client would phrase this in Japanese (ALWAYS Japanese regardless of output language, used verbatim in client meetings)",
+      "criticism_detail": "string — detailed explanation of why this is a problem, in {LANGUAGE}",
       "specific_weakness": "string — the exact weak point being exploited",
       "likely_client_phrasing": [
         "string — exact phrases a Japanese client might use",

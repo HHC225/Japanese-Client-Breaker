@@ -18,7 +18,7 @@ Japanese-Client-Breaker is a defense harness for high-stakes Japanese enterprise
    ```
    Analyze the deliverables in input/ for a high-stakes Japanese enterprise review
    ```
-3. The pipeline runs automatically and outputs to `_workspace/run_YYYYMMDD_HHMMSS/defense-report.html`
+3. The pipeline runs automatically and outputs to `_workspace/run_YYYYMMDD_HHMMSS/{TIMESTAMP}_client-defense-report.html`
    - A `_workspace/latest` symlink always points to the most recent run
 
 ## Project Structure

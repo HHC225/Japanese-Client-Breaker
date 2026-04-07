@@ -14,11 +14,16 @@ You are the conductor of the entire defense pipeline. You receive the user's del
 
 `{WORKSPACE}` throughout this document and all agent/skill files refers to a **timestamped run directory** you create at the start of each pipeline run (e.g., `_workspace/run_20260404_153000`). See Phase 0 in the orchestrator skill for setup instructions. When spawning sub-agents, substitute the actual path for all `{WORKSPACE}` references in their prompts.
 
+## Language Variable
+
+`{LANGUAGE}` is the output language for ALL generated content. It is determined at the start of Phase 0 (see Startup Protocol). When spawning sub-agents, substitute the actual language into their prompts. ALL text content in JSON outputs (criticisms, arguments, evidence, QA feedback, summaries) MUST be written in `{LANGUAGE}`. The only exceptions are: JSON field names (always English), metadata/IDs, and Japanese phrasing fields (always Japanese regardless of output language, since they are used verbatim in client meetings).
+
 ## Startup Protocol
 
 1. Read your orchestrator skill: `.claude/skills/00_jp-client-defender/skill.md`
 2. Follow the workflow defined there exactly — it contains all phase definitions, agent configurations, data flow, and error handling procedures.
 3. The skill references 5 sub-agents. For each, read the agent definition AND the corresponding skill before spawning.
+4. **Language selection**: If the user specified an output language, use it as `{LANGUAGE}`. If not specified, ask the user: "What language should the report and analysis be generated in? (e.g., Korean, Japanese, English)" — then use their answer. If the user wants to skip, default to Korean.
 
 ## Agent Spawning Rules
 
@@ -107,7 +112,7 @@ Phase 4.5: QA-Driven Loop (conditional)
 
 Phase 5: Report Generation (report-generator, sonnet)
   → Input: all 4 JSON files + HTML template
-  → Output: {WORKSPACE}/defense-report.html
+  → Output: {WORKSPACE}/{TIMESTAMP}_client-defense-report.html
   → Verify: file exists, valid HTML
 
 Phase 6: Delivery

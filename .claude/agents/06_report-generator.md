@@ -33,7 +33,7 @@ Also read the HTML template from the skill's assets directory (the orchestrator 
 
 ## Output Protocol
 
-Write the final report to the path specified by the orchestrator. Default: `{WORKSPACE}/defense-report.html`
+Write the final report to the path specified by the orchestrator. Default: `{WORKSPACE}/{TIMESTAMP}_client-defense-report.html` (the orchestrator provides the exact filename including the timestamp)
 
 The report generator should:
 1. Read the HTML template
@@ -109,8 +109,8 @@ Merge all upstream data into this structure:
           "id": "FIND-001",
           "type": "string",
           "severity": "string",
-          "criticism_jp": "string",
-          "criticism_en": "string",
+          "criticism": "string — main criticism in user's language",
+          "criticism_jp": "string — Japanese phrasing for client meetings",
           "criticism_detail": "string",
           "client_psychology": "string",
           "argument_tree": [
@@ -192,6 +192,16 @@ Merge all upstream data into this structure:
 - Smooth scroll to sections
 - Print mode (hides sidebar, expands all accordions)
 - Keyboard shortcuts: 'j'/'k' for next/prev item, 'e' to expand all
+
+## JSON Safety Rules for HTML Embedding
+
+When injecting REPORT_DATA into the HTML template:
+
+1. **Placeholder replacement**: The template has `const REPORT_DATA = /* __REPORT_DATA_PLACEHOLDER__ */ {};` — replace the ENTIRE pattern `/* __REPORT_DATA_PLACEHOLDER__ */ {}` with the JSON (do NOT leave the trailing `{}`).
+2. **Script tag safety**: Any `</script>` in string values will break the HTML. Replace with `<\/script>` (case-insensitive).
+3. **JSON escaping**: All strings must be properly escaped — `\\` for backslashes, `\"` for quotes, `\n` for newlines.
+4. **Compact output**: Do NOT pretty-print. Use a single-line JSON blob.
+5. **Post-write validation**: After writing, run `node .claude/skills/06_html-report-generation/scripts/validate-report.js {output_path}` and fix any errors before declaring success.
 
 ## Error Handling
 

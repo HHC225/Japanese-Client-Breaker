@@ -163,6 +163,7 @@ ul, ol { list-style: none; }
 .filter-btn[data-filter="HIGH"].active { background: var(--c-high); }
 .filter-btn[data-filter="MEDIUM"].active { background: var(--c-medium); }
 .filter-btn[data-filter="LOW"].active { background: var(--c-low); }
+.filter-btn[data-filter="EXCLUDED"].active { background: #6b7280; }
 
 .sidebar-nav {
   flex: 1; overflow-y: auto; padding: 8px 0;
@@ -288,8 +289,51 @@ ul, ol { list-style: none; }
 /* ===== Content Area ===== */
 .content {
   padding: 32px 40px 80px;
-  max-width: 960px;
+  max-width: 1060px;
+  margin: 0 auto;
 }
+
+/* ===== Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  gap: 2px;
+  padding: 0 40px;
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+}
+.tab-btn {
+  padding: 12px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+  letter-spacing: -0.01em;
+}
+.tab-btn:hover {
+  color: var(--c-text);
+  background: var(--c-surface-hover);
+}
+.tab-btn.active {
+  color: var(--c-accent);
+  border-bottom-color: var(--c-accent);
+}
+.tab-btn .tab-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  margin-left: 6px;
+}
+.tab-btn.active .tab-count {
+  background: var(--c-accent-soft);
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn 0.25s ease; }
 
 /* ===== Executive Summary ===== */
 .summary-section {
@@ -452,11 +496,13 @@ ul, ol { list-style: none; }
 }
 .item-card.open .item-card-body { display: block; }
 .item-card-desc {
-  padding: 16px 22px;
-  font-size: 13px;
-  color: var(--c-text-secondary);
-  line-height: 1.7;
+  padding: 18px 24px;
+  font-size: 14.5px;
+  color: var(--c-text);
+  line-height: 1.8;
   background: var(--c-bg);
+  font-family: var(--font-jp);
+  border-left: 3px solid var(--c-accent);
 }
 
 /* ===== Finding Cards ===== */
@@ -506,13 +552,21 @@ ul, ol { list-style: none; }
   font-size: 11px; font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--c-text-muted);
-  margin-bottom: 8px;
+  color: var(--c-accent);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.finding-detail-title::before {
+  content: '';
+  width: 3px; height: 14px;
+  background: var(--c-accent);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 .finding-detail-text {
-  font-size: 13px;
-  color: var(--c-text-secondary);
-  line-height: 1.7;
+  font-size: 14px;
+  color: var(--c-text);
+  line-height: 1.8;
 }
 
 /* ===== Argument Tree ===== */
@@ -798,27 +852,6 @@ ul, ol { list-style: none; }
   clip: rect(0,0,0,0); border: 0;
 }
 
-/* ===== Keyboard Hint ===== */
-.kbd-hint {
-  position: fixed; bottom: 20px; right: 20px;
-  background: var(--c-sidebar);
-  color: var(--c-sidebar-text);
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  font-size: 11px;
-  opacity: 0.7;
-  pointer-events: none;
-  z-index: 200;
-}
-.kbd-hint kbd {
-  display: inline-block;
-  padding: 1px 6px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  margin: 0 2px;
-}
 
 /* ===== Mobile Sidebar Toggle ===== */
 .mobile-toggle {
@@ -851,9 +884,117 @@ ul, ol { list-style: none; }
   .gauge-container { flex-direction: column; text-align: center; }
 }
 
+/* ===== Legend Popup ===== */
+.legend-popup {
+  display: none;
+  position: absolute; top: calc(var(--header-h) - 4px); right: 20px;
+  width: 320px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+  z-index: 200;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--c-text-secondary);
+}
+.legend-popup.show { display: block; }
+.legend-section { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--c-border-light); }
+.legend-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.legend-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--c-text-muted); margin-bottom: 4px; }
+
+/* ===== QA Firm Detail Cards ===== */
+.qa-grades-detail {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-top: 8px;
+}
+.qa-firm-detail {
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.qa-firm-detail:hover { border-color: var(--c-accent); }
+.qa-firm-detail.has-issues { border-left: 3px solid var(--c-medium); }
+.qa-firm-detail-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+}
+.qa-firm-detail-body {
+  display: none;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--c-border-light);
+  margin-top: 0;
+  padding-top: 12px;
+}
+.qa-firm-detail.open .qa-firm-detail-body { display: block; }
+.qa-firm-detail.open .qa-firm-detail-header span:last-child svg { transform: rotate(90deg); }
+
+/* ===== QA Summary Firm Expansion ===== */
+.qa-firm-expanded {
+  background: var(--c-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border-light);
+  padding: 20px;
+  margin-top: 16px;
+}
+.qa-firm-findings-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 12px;
+}
+.qa-firm-finding-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.qa-firm-finding-row:hover { background: var(--c-surface-hover); border: 1px solid var(--c-accent); }
+.qa-firm-finding-row .grade { font-weight: 800; font-size: 14px; min-width: 24px; }
+.qa-firm-finding-row .label { flex: 1; color: var(--c-text-secondary); }
+.qa-firm-finding-row .action { font-size: 12px; color: var(--c-accent); font-weight: 600; }
+
+/* ===== Dismiss / Exclude ===== */
+.dismiss-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 600;
+  color: var(--c-text-muted);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  transition: all var(--transition);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.dismiss-btn:hover {
+  color: var(--c-text-secondary);
+  border-color: var(--c-text-muted);
+}
+.dismiss-btn svg { flex-shrink: 0; }
+.item-card.dismissed {
+  opacity: 0.45;
+  border-left: 3px solid #9ca3af;
+}
+.item-card.dismissed .item-card-header { background: #f9fafb; }
+.item-card.dismissed .dismiss-btn {
+  color: var(--c-high);
+  border-color: var(--c-high-border);
+  background: var(--c-high-soft);
+}
+.nav-item.dismissed-nav {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
 /* ===== Print Styles ===== */
 @media print {
-  .sidebar, .header, .mobile-toggle, .kbd-hint, .sidebar-footer { display: none !important; }
+  .sidebar, .header, .mobile-toggle, .sidebar-footer { display: none !important; }
   .main { margin-left: 0 !important; }
   .content { padding: 0 !important; max-width: 100% !important; }
   .item-card, .finding, .arg-level { break-inside: avoid; }
@@ -887,7 +1028,7 @@ ul, ol { list-style: none; }
   </div>
   <div class="sidebar-search">
     <div class="sidebar-search-wrap">
-      <span class="sidebar-search-icon">&#x1F50D;</span>
+      <span class="sidebar-search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
       <input type="text" id="search-input" placeholder="Search items..." aria-label="Search items">
     </div>
   </div>
@@ -896,6 +1037,7 @@ ul, ol { list-style: none; }
     <button class="filter-btn" data-filter="HIGH">High</button>
     <button class="filter-btn" data-filter="MEDIUM">Mid</button>
     <button class="filter-btn" data-filter="LOW">Low</button>
+    <button class="filter-btn" data-filter="EXCLUDED">Excluded</button>
   </div>
   <nav class="sidebar-nav" id="sidebar-nav">
     <div class="nav-section-title">Summary</div>
@@ -904,15 +1046,17 @@ ul, ol { list-style: none; }
     </div>
     <div class="nav-section-title">Items</div>
     <div id="nav-items"></div>
+    <div class="nav-section-title">Structural</div>
+    <div id="nav-structural"></div>
     <div class="nav-section-title">QA Report</div>
     <div class="nav-item" data-target="qa-summary">
       <span class="nav-item-label">Consulting QA Summary</span>
     </div>
   </nav>
   <div class="sidebar-footer">
-    <button class="sidebar-footer-btn" id="btn-expand-all" title="Expand all sections (E)">&#x25BC; Expand</button>
-    <button class="sidebar-footer-btn" id="btn-collapse-all" title="Collapse all sections">&#x25B2; Collapse</button>
-    <button class="sidebar-footer-btn" id="btn-print" title="Print report (P)">&#x1F5B6; Print</button>
+    <button class="sidebar-footer-btn" id="btn-expand-all" title="Expand all sections (E)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Expand</button>
+    <button class="sidebar-footer-btn" id="btn-collapse-all" title="Collapse all sections"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg> Collapse</button>
+    <button class="sidebar-footer-btn" id="btn-print" title="Print report (P)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print</button>
   </div>
 </aside>
 
@@ -921,19 +1065,60 @@ ul, ol { list-style: none; }
   <header class="header">
     <h1 class="header-title" id="header-title">Defense Report</h1>
     <div class="header-actions">
-      <button class="header-btn" id="btn-meeting-mode" title="Show only PASS items">Meeting Mode</button>
+      <button class="header-btn" id="btn-legend" onclick="document.getElementById('legend-popup').classList.toggle('show')" title="Badge legend">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Legend
+      </button>
+      <div class="legend-popup" id="legend-popup">
+        <div class="legend-section">
+          <div class="legend-title">Severity</div>
+          <span class="badge badge-high">HIGH</span> Critical issue
+          <span class="badge badge-medium">MEDIUM</span> Notable weakness
+          <span class="badge badge-low">LOW</span> Minor concern
+        </div>
+        <div class="legend-section">
+          <div class="legend-title">Criticism Type</div>
+          <span class="badge badge-type">COMPREHENSIVENESS</span> Missing elements
+          <span class="badge badge-type">AMBIGUITY</span> Unclear/undecided
+          <span class="badge badge-type">EVIDENCE</span> Insufficient proof
+          <span class="badge badge-type">RISK</span> Unaddressed risk
+          <span class="badge badge-type">FORM</span> Format/style issue
+          <span class="badge badge-type">PROCESS</span> Missing procedure
+        </div>
+        <div class="legend-section">
+          <div class="legend-title">QA Verdict</div>
+          <span class="badge badge-pass">PASS</span> Defense ready
+          <span class="badge badge-revision">REVISION NEEDED</span> Needs improvement
+          <span class="badge badge-fail">FAIL</span> Must rework
+        </div>
+      </div>
+      <button class="header-btn" id="btn-meeting-mode" title="Show only PASS items">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Meeting Mode
+      </button>
     </div>
   </header>
+
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" data-tab="overview">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Overview
+    </button>
+    <button class="tab-btn" data-tab="findings">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Findings
+      <span class="tab-count" id="tab-count-findings">0</span>
+    </button>
+    <button class="tab-btn" data-tab="qa">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      QA Report
+    </button>
+  </div>
 
   <div class="content" id="content-area">
     <!-- Rendered by JavaScript -->
   </div>
 </div>
-</div>
-
-<!-- Keyboard Hints -->
-<div class="kbd-hint">
-  <kbd>J</kbd>/<kbd>K</kbd> Navigate &nbsp; <kbd>E</kbd> Expand &nbsp; <kbd>P</kbd> Print
 </div>
 
 <script>
@@ -965,9 +1150,21 @@ function verdictClass(v) {
 }
 
 function copyText(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    // Brief visual feedback could be added
-  });
+  navigator.clipboard.writeText(text).then(() => {});
+}
+
+function formatText(str) {
+  if (!str) return '';
+  let t = esc(str);
+  // Split on sentence-ending punctuation followed by space for paragraph-like breaks
+  t = t.replace(/(。|\.)\s+/g, '$1<br><br>');
+  // Bold quoted Japanese phrases 「...」
+  t = t.replace(/「([^」]+)」/g, '<strong style="color:var(--c-text)">「$1」</strong>');
+  // Bold English quoted phrases "..."
+  t = t.replace(/&quot;([^&]+)&quot;/g, '<strong style="color:var(--c-text)">"$1"</strong>');
+  // Highlight key terms
+  t = t.replace(/(要検討|未確定|未定義|未記載|不在|欠如|不足|不備|曖昧|致命的|Critical|Major|HIGH|MEDIUM)/g, '<mark style="background:#fef08a;padding:0 3px;border-radius:2px;font-weight:600">$1</mark>');
+  return t;
 }
 
 // ===== Render Functions =====
@@ -1032,7 +1229,7 @@ function renderSummary(data) {
 
     ${topIssues.length > 0 ? `
     <div class="critical-issues">
-      <div class="critical-issues-title">&#x26A0; Top Critical Issues</div>
+      <div class="critical-issues-title">${SVG.alert} Top Critical Issues</div>
       <ul class="critical-issues-list">
         ${topIssues.map(i => `<li>${esc(i)}</li>`).join('')}
       </ul>
@@ -1055,29 +1252,29 @@ function renderArgumentTree(tree) {
       </div>
       <div class="arg-level-body">
         <div class="arg-section">
-          <div class="arg-section-label">&#x1F4AC; Your Argument</div>
-          <div class="arg-section-text">${esc(level.your_argument || level.your_counter || level.your_final_defense || '')}</div>
+          <div class="arg-section-label">${SVG.speech} Your Argument</div>
+          <div class="arg-section-text">${formatText(level.your_argument || level.your_counter || level.your_final_defense || '')}</div>
         </div>
         ${level.japanese_phrasing ? `
         <div class="arg-section">
-          <div class="arg-section-label">&#x1F1EF;&#x1F1F5; Japanese Phrasing</div>
+          <div class="arg-section-label">${SVG.flag} Japanese Phrasing</div>
           <div class="arg-jp-phrase" onclick="copyText(this.textContent.trim())">${esc(level.japanese_phrasing)}</div>
         </div>` : ''}
         ${level.evidence && level.evidence.length ? `
         <div class="arg-section">
-          <div class="arg-section-label">&#x1F4CA; Evidence</div>
+          <div class="arg-section-label">${SVG.chart} Evidence</div>
           <div class="arg-evidence-list">
             ${level.evidence.map(e => `<div class="arg-evidence-item">${esc(e)}</div>`).join('')}
           </div>
         </div>` : ''}
         ${level.expected_client_rebuttal || level.client_rebuttal ? `
         <div class="arg-rebuttal">
-          <div class="arg-rebuttal-label">&#x21A9; Expected Client Rebuttal</div>
+          <div class="arg-rebuttal-label">${SVG.rebuttal} Expected Client Rebuttal</div>
           ${esc(level.expected_client_rebuttal || level.client_rebuttal)}
         </div>` : ''}
         ${level.closing_strategy ? `
         <div class="arg-section" style="margin-top:12px">
-          <div class="arg-section-label">&#x2705; Closing Strategy</div>
+          <div class="arg-section-label">${SVG.check} Closing Strategy</div>
           <div class="arg-section-text">${esc(level.closing_strategy)}</div>
         </div>` : ''}
       </div>
@@ -1086,22 +1283,49 @@ function renderArgumentTree(tree) {
 
 function renderQAGrades(qa) {
   if (!qa) return '';
-  const firms = ['mckinsey', 'bcg', 'bain', 'deloitte', 'accenture'];
+  const firms = ['accenture', 'mckinsey', 'bcg', 'bain', 'deloitte'];
   const labels = { mckinsey: 'McKinsey', bcg: 'BCG', bain: 'Bain', deloitte: 'Deloitte', accenture: 'Accenture' };
+  const lensIcons = {
+    mckinsey: 'Structure/Logic',
+    bcg: 'Strategic Pragmatism',
+    bain: 'Results Orientation',
+    deloitte: 'Evidence/Compliance',
+    accenture: 'Implementation'
+  };
 
-  return `<div class="qa-grades">${firms.map(f => {
+  return `<div class="qa-grades-detail">${firms.map(f => {
     const review = qa[f];
     if (!review) return '';
     const grade = review.grade || '?';
-    return `<div class="qa-grade">
-      <span class="qa-grade-firm">${labels[f]}</span>
-      <span class="qa-grade-letter text-${gradeColor(grade)}">${esc(grade)}</span>
-      ${review.detail || review.feedback ? `
-      <div class="qa-grade-tooltip">
-        <strong>${labels[f]}</strong><br>
-        ${esc(review.detail || review.feedback || '')}
-        ${review.improvement_actions ? '<br><br><strong>Improvements:</strong><br>' + review.improvement_actions.map(a => '&bull; ' + esc(a)).join('<br>') : ''}
-      </div>` : ''}
+    const hasIssues = (review.weaknesses && review.weaknesses.length) || (review.improvement_actions && review.improvement_actions.length);
+    return `<div class="qa-firm-detail ${hasIssues ? 'has-issues' : ''}" onclick="this.classList.toggle('open')">
+      <div class="qa-firm-detail-header">
+        <span class="qa-grade-letter text-${gradeColor(grade)}" style="font-size:16px;font-weight:800">${esc(grade)}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--c-text)">${labels[f]}</div>
+          <div style="font-size:11px;color:var(--c-text-muted)">${lensIcons[f]}</div>
+        </div>
+        ${hasIssues ? '<span class="badge badge-revision" style="font-size:10px">Action needed</span>' : '<span class="badge badge-pass" style="font-size:10px">OK</span>'}
+        <span style="color:var(--c-text-muted);font-size:12px">${SVG.chevron}</span>
+      </div>
+      <div class="qa-firm-detail-body">
+        ${review.detail ? `<div style="font-size:13px;color:var(--c-text);line-height:1.7;margin-bottom:12px">${esc(review.detail)}</div>` : ''}
+        ${review.strengths && review.strengths.length ? `
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:var(--c-pass);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">${SVG.check} Strengths</div>
+          ${review.strengths.map(s => `<div style="font-size:12px;color:var(--c-text-secondary);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:4px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--c-pass)"></span>${esc(s)}</div>`).join('')}
+        </div>` : ''}
+        ${review.weaknesses && review.weaknesses.length ? `
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:var(--c-medium);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">${SVG.alert} Weaknesses</div>
+          ${review.weaknesses.map(w => `<div style="font-size:12px;color:var(--c-text-secondary);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:4px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--c-medium)"></span>${esc(w)}</div>`).join('')}
+        </div>` : ''}
+        ${review.improvement_actions && review.improvement_actions.length ? `
+        <div style="background:var(--c-accent-soft);border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:10px 14px;margin-top:8px">
+          <div style="font-size:11px;font-weight:700;color:var(--c-accent);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">${SVG.chart} Recommended Fixes</div>
+          ${review.improvement_actions.map(a => `<div style="font-size:13px;color:var(--c-text);padding-left:16px;position:relative;line-height:1.7;margin-bottom:2px"><span style="position:absolute;left:4px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--c-accent)"></span>${esc(a)}</div>`).join('')}
+        </div>` : ''}
+      </div>
     </div>`;
   }).join('')}</div>`;
 }
@@ -1114,10 +1338,10 @@ function renderFinding(finding) {
   return `
   <div class="finding" data-severity="${sev}" data-finding-id="${esc(finding.id)}">
     <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
-      <div class="finding-toggle">&#x25B6;</div>
+      <div class="finding-toggle">${SVG.chevron}</div>
       <div class="finding-info">
         <div class="finding-title">
-          ${esc(finding.criticism_en || finding.criticism_detail || 'Finding')}
+          ${esc(finding.criticism || finding.criticism_en || finding.criticism_detail || 'Finding')}
         </div>
         ${finding.criticism_jp ? `<div class="finding-jp">${esc(finding.criticism_jp)}</div>` : ''}
       </div>
@@ -1131,13 +1355,13 @@ function renderFinding(finding) {
       ${finding.criticism_detail ? `
       <div class="finding-detail">
         <div class="finding-detail-title">Criticism Detail</div>
-        <div class="finding-detail-text">${esc(finding.criticism_detail)}</div>
+        <div class="finding-detail-text">${formatText(finding.criticism_detail)}</div>
       </div>` : ''}
 
       ${finding.client_psychology ? `
       <div class="finding-detail">
         <div class="finding-detail-title">Client Psychology</div>
-        <div class="finding-detail-text">${esc(finding.client_psychology)}</div>
+        <div class="finding-detail-text">${formatText(finding.client_psychology)}</div>
       </div>` : ''}
 
       ${finding.argument_tree ? `
@@ -1166,7 +1390,7 @@ function renderItem(item) {
   return `
   <div class="item-card" id="item-${esc(item.id)}" data-item-id="${esc(item.id)}" data-max-severity="${maxSev}">
     <div class="item-card-header" onclick="this.parentElement.classList.toggle('open')">
-      <div class="item-card-toggle">&#x25B6;</div>
+      <div class="item-card-toggle">${SVG.chevron}</div>
       <div class="item-card-info">
         <div class="item-card-title">
           <span class="item-card-id">${esc(item.id)}</span>
@@ -1179,6 +1403,9 @@ function renderItem(item) {
         </div>
       </div>
       <div class="item-card-badges">
+        <button class="dismiss-btn" onclick="event.stopPropagation();toggleDismiss('${esc(item.id)}',this)" title="Exclude from analysis">
+          ${dismissedItems.has(item.id) ? SVG.restore + ' Restore' : SVG.dismiss + ' Exclude'}
+        </button>
         <span class="badge badge-${severityClass(maxSev)}">${maxSev}</span>
       </div>
     </div>
@@ -1192,7 +1419,7 @@ function renderItem(item) {
 function renderQASummary(data) {
   const s = data.summary || {};
   const items = data.items || [];
-  const firms = ['mckinsey', 'bcg', 'bain', 'deloitte', 'accenture'];
+  const firms = ['accenture', 'mckinsey', 'bcg', 'bain', 'deloitte'];
   const labels = { mckinsey: 'McKinsey', bcg: 'BCG', bain: 'Bain', deloitte: 'Deloitte', accenture: 'Accenture' };
 
   // Calculate average grades per firm
@@ -1237,6 +1464,53 @@ function renderQASummary(data) {
     return 'F';
   }
 
+  const lensDesc = {
+    accenture: 'Implementation Feasibility',
+    mckinsey: 'Structure / Logic / MECE',
+    bcg: 'Strategic Pragmatism / Scenarios',
+    bain: 'Results Orientation / Action',
+    deloitte: 'Evidence / Compliance / Audit'
+  };
+  const lensRationale = {
+    accenture: 'Accenture Delivery Methods (ADM) evaluates whether recommendations can actually be built and deployed. As a global SI firm, Accenture focuses on closing the gap between strategy and execution — feasibility, technology fit, resource reality, and organizational change readiness.',
+    mckinsey: "McKinsey's Pyramid Principle (Barbara Minto, 1960s) is the gold standard for structured communication. This lens checks whether arguments follow top-down logic: conclusion first, MECE supporting points, and a clear 'So What?' at every level. Weak structure means the audience works to understand — fatal in a client meeting.",
+    bcg: "BCG's Strategy Palette framework demands that every recommendation be stress-tested across best/worst/likely scenarios and generate novel insights beyond what the client already knows. BCG values honest trade-off analysis over pretending everything is optimal.",
+    bain: "Bain's Results Delivery\u00AE framework centers on measurable outcomes. The Value Bridge decomposes targets into drivers; Adoption Risk Diagnostics pinpoint where behavior change is hardest; and every recommendation must have Finance-verifiable leading/lagging indicators.",
+    deloitte: "Deloitte's Enterprise Value Delivery (EVD), built on ITIL/ITSM/CMMI, demands audit-grade evidence for every claim. In Japanese banking contexts, this means FISC\u5B89\u5168\u5BFE\u7B56\u57FA\u6E96 compliance, FSA regulatory awareness, and full citation trails. Claims without evidence are claims without value."
+  };
+
+  // Collect per-firm per-finding details
+  const firmFindings = {};
+  firms.forEach(f => { firmFindings[f] = []; });
+  items.forEach(item => {
+    (item.findings || []).forEach(finding => {
+      if (finding.qa_reviews) {
+        firms.forEach(f => {
+          if (finding.qa_reviews[f]) {
+            firmFindings[f].push({
+              findingId: finding.id,
+              title: finding.criticism || finding.criticism_en || finding.criticism_jp || finding.id,
+              review: finding.qa_reviews[f]
+            });
+          }
+        });
+      }
+    });
+  });
+  (data.structural_criticisms || []).forEach(sc => {
+    if (sc.qa_reviews) {
+      firms.forEach(f => {
+        if (sc.qa_reviews[f]) {
+          firmFindings[f].push({
+            findingId: sc.id,
+            title: sc.criticism || sc.id,
+            review: sc.qa_reviews[f]
+          });
+        }
+      });
+    }
+  });
+
   return `
   <section id="section-qa-summary">
     <div class="section-header">
@@ -1244,18 +1518,120 @@ function renderQASummary(data) {
       <span class="badge badge-type">Big 5 Validation</span>
     </div>
     <div class="qa-summary">
-      <div class="qa-summary-grid">
+      <div class="qa-summary-grid" id="qa-firm-selector">
         ${firms.map(f => {
           const grade = avgGrade(f);
+          const count = firmFindings[f].length;
+          const actionCount = firmFindings[f].filter(ff => ff.review.improvement_actions && ff.review.improvement_actions.length).length;
           return `
-          <div class="qa-firm-card">
+          <div class="qa-firm-card" data-firm="${f}" onclick="selectQAFirm('${f}')" style="cursor:pointer">
             <div class="qa-firm-name">${labels[f]}</div>
             <div class="qa-firm-grade text-${gradeColor(grade)}">${grade}</div>
-            <div class="qa-firm-label">Average Grade</div>
+            <div class="qa-firm-label">${lensDesc[f]}</div>
+            ${actionCount > 0 ? `<div style="font-size:11px;color:var(--c-medium);margin-top:4px;font-weight:600">${actionCount} actions needed</div>` : `<div style="font-size:11px;color:var(--c-pass);margin-top:4px;font-weight:600">All clear</div>`}
           </div>`;
         }).join('')}
       </div>
-      ${renderRadarChart(data)}
+
+      <div id="qa-overview-panel">
+        ${renderRadarChart(data)}
+      </div>
+
+      ${firms.map(f => {
+        const grade = avgGrade(f);
+        const findings = firmFindings[f];
+        const actionItems = findings.filter(ff => ff.review.improvement_actions && ff.review.improvement_actions.length);
+        // Compute criteria averages for this firm
+        const criteriaKeys = {
+          mckinsey: ['pyramid_compliance','mece_validation','so_what_test','issue_tree_integrity'],
+          bcg: ['scenario_robustness','pragmatic_feasibility','tradeoff_awareness','novel_insight'],
+          bain: ['value_bridge','adoption_risk','actionability','outcome_measurability'],
+          deloitte: ['evidence_quality','regulatory_awareness','audit_trail','risk_documentation'],
+          accenture: ['implementation_feasibility','technology_alignment','resource_realism','change_management']
+        };
+        const criteriaLabels = {
+          pyramid_compliance:'Pyramid',mece_validation:'MECE',so_what_test:'So What?',issue_tree_integrity:'Issue Tree',
+          scenario_robustness:'Scenario',pragmatic_feasibility:'Feasibility',tradeoff_awareness:'Trade-offs',novel_insight:'Novel Insight',
+          value_bridge:'Value Bridge',adoption_risk:'Adoption Risk',actionability:'Actionability',outcome_measurability:'Measurability',
+          evidence_quality:'Evidence',regulatory_awareness:'Regulatory',audit_trail:'Audit Trail',risk_documentation:'Risk Docs',
+          implementation_feasibility:'Feasibility',technology_alignment:'Tech Align',resource_realism:'Resources',change_management:'Change Mgmt'
+        };
+        const keys = criteriaKeys[f] || [];
+        const criteriaAvgs = {};
+        keys.forEach(k => { criteriaAvgs[k] = {sum:0,count:0}; });
+        findings.forEach(ff => {
+          if (ff.review.criteria_scores) {
+            keys.forEach(k => {
+              if (typeof ff.review.criteria_scores[k] === 'number') {
+                criteriaAvgs[k].sum += ff.review.criteria_scores[k];
+                criteriaAvgs[k].count++;
+              }
+            });
+          }
+        });
+        const hasCriteria = keys.some(k => criteriaAvgs[k].count > 0);
+        // Build criteria bar chart HTML
+        let criteriaHTML = '';
+        if (hasCriteria) {
+          criteriaHTML = '<div style="margin:16px 0"><div style="font-size:12px;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px">Criteria Breakdown</div>';
+          keys.forEach(k => {
+            const avg = criteriaAvgs[k].count ? Math.round(criteriaAvgs[k].sum / criteriaAvgs[k].count) : 0;
+            const barColor = avg >= 80 ? 'var(--c-pass)' : avg >= 60 ? 'var(--c-medium)' : 'var(--c-high)';
+            criteriaHTML += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">' +
+              '<div style="width:100px;font-size:12px;font-weight:600;color:var(--c-text-secondary);text-align:right">' + (criteriaLabels[k]||k) + '</div>' +
+              '<div style="flex:1;height:22px;background:var(--c-bg);border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--c-border-light)">' +
+              '<div style="height:100%;width:' + avg + '%;background:' + barColor + ';border-radius:var(--radius-sm);transition:width 0.5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-size:10px;font-weight:700;color:white">' + (avg > 15 ? avg : '') + '</div></div>' +
+              '<div style="width:30px;font-size:12px;font-weight:700;color:var(--c-text)">' + avg + '</div></div>';
+          });
+          criteriaHTML += '</div>';
+        }
+        return `
+        <div class="qa-firm-expanded" id="qa-detail-${f}" style="display:none">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <button onclick="selectQAFirm(null)" style="padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;color:var(--c-text-secondary);border:1px solid var(--c-border);background:var(--c-surface);cursor:pointer;display:flex;align-items:center;gap:4px">${SVG.rebuttal} Back to Overview</button>
+            <span class="qa-grade-letter text-${gradeColor(grade)}" style="font-size:24px;font-weight:800">${grade}</span>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700">${labels[f]}</div>
+              <div style="font-size:12px;color:var(--c-text-muted)">${lensDesc[f]} -- ${findings.length} findings reviewed</div>
+            </div>
+          </div>
+          <div style="background:var(--c-bg);border-radius:var(--radius-md);padding:14px 18px;margin-bottom:16px;border:1px solid var(--c-border-light)">
+            <div style="font-size:12px;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Why this evaluation method?</div>
+            <div style="font-size:13px;color:var(--c-text-secondary);line-height:1.7">${lensRationale[f] || ''}</div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;font-size:11px">
+              <span style="padding:2px 8px;border-radius:var(--radius-full);background:#ecfdf5;color:#065f46;font-weight:600">A: 90-100</span>
+              <span style="padding:2px 8px;border-radius:var(--radius-full);background:#eff6ff;color:#1d4ed8;font-weight:600">B: 75-89</span>
+              <span style="padding:2px 8px;border-radius:var(--radius-full);background:#fffbeb;color:#92400e;font-weight:600">C: 60-74</span>
+              <span style="padding:2px 8px;border-radius:var(--radius-full);background:#fff7ed;color:#c2410c;font-weight:600">D: 40-59</span>
+              <span style="padding:2px 8px;border-radius:var(--radius-full);background:#fef2f2;color:#dc2626;font-weight:600">F: 0-39</span>
+            </div>
+          </div>
+          ${criteriaHTML}
+
+          ${actionItems.length > 0 ? `
+          <div style="background:var(--c-accent-soft);border:1px solid #bfdbfe;border-radius:var(--radius-md);padding:14px 18px;margin-bottom:16px">
+            <div style="font-size:12px;font-weight:700;color:var(--c-accent);margin-bottom:8px">${SVG.chart} RECOMMENDED FIXES (${actionItems.length})</div>
+            ${actionItems.map(af => `
+              <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #dbeafe">
+                <div style="font-size:11px;font-weight:600;color:var(--c-text-muted);margin-bottom:2px">${esc(af.findingId)}</div>
+                ${af.review.improvement_actions.map(a => `<div style="font-size:13px;color:var(--c-text);line-height:1.6;padding-left:14px;position:relative"><span style="position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--c-accent)"></span>${esc(a)}</div>`).join('')}
+              </div>`).join('')}
+          </div>` : `<div style="background:var(--c-pass-soft);border:1px solid #a7f3d0;border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:13px;color:#065f46">${SVG.check} No improvement actions required from ${labels[f]} perspective.</div>`}
+
+          <div style="font-size:12px;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Per-Finding Breakdown</div>
+          <div class="qa-firm-findings-list">
+            ${findings.map(ff => {
+              const g = ff.review.grade || '?';
+              const hasActions = ff.review.improvement_actions && ff.review.improvement_actions.length;
+              return `<div class="qa-firm-finding-row">
+                <span class="grade text-${gradeColor(g)}">${esc(g)}</span>
+                <span class="label">${esc(ff.findingId)}: ${esc((ff.title || '').substring(0, 60))}${(ff.title || '').length > 60 ? '...' : ''}</span>
+                ${hasActions ? '<span class="action">Fix needed</span>' : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
     </div>
   </section>`;
 }
@@ -1275,7 +1651,7 @@ function renderWarnings(data) {
     });
   });
   if (!warnings.length) return '';
-  return warnings.map(w => `<div class="warning-banner">&#x26A0;&#xFE0F; ${esc(w)}</div>`).join('');
+  return warnings.map(w => `<div class="warning-banner">${SVG.alert} ${esc(w)}</div>`).join('');
 }
 
 // ===== Structural Criticisms =====
@@ -1289,7 +1665,7 @@ function renderStructuralCriticisms(data) {
     return `
     <div class="item-card" id="struct-${esc(sc.id)}" data-max-severity="${sev}">
       <div class="item-card-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="item-card-toggle">&#x25B6;</div>
+        <div class="item-card-toggle">${SVG.chevron}</div>
         <div class="item-card-info">
           <div class="item-card-title"><span class="item-card-id">${esc(sc.id)}</span>${esc(sc.criticism)}</div>
         </div>
@@ -1310,7 +1686,7 @@ function renderStructuralCriticisms(data) {
 // ===== Radar Chart =====
 function renderRadarChart(data) {
   const items = data.items || [];
-  const firms = ['mckinsey', 'bcg', 'bain', 'deloitte', 'accenture'];
+  const firms = ['accenture', 'mckinsey', 'bcg', 'bain', 'deloitte'];
   const labels = ['McKinsey', 'BCG', 'Bain', 'Deloitte', 'Accenture'];
   const gradeMap = { A: 95, 'A+': 98, 'A-': 90, B: 82, 'B+': 87, 'B-': 77, C: 67, 'C+': 72, 'C-': 62, D: 50, F: 30 };
   const firmScores = {};
@@ -1383,12 +1759,30 @@ function renderRadarChart(data) {
   </div>`;
 }
 
+// ===== SVG Icons =====
+const SVG = {
+  chevron: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  speech: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  flag: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+  chart: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  rebuttal: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+  check: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  alert: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  dismiss: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  restore: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+  brain: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>'
+};
+
+// ===== Dismiss State =====
+const dismissedItems = new Set(JSON.parse(localStorage.getItem('jcd_dismissed') || '[]'));
+function saveDismissed() { localStorage.setItem('jcd_dismissed', JSON.stringify([...dismissedItems])); }
+
 // ===== Main Render =====
 function render(data) {
   if (!data || !data.items) {
     document.getElementById('content-area').innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">&#x1F4CB;</div>
+        <div class="empty-state-icon">${SVG.alert}</div>
         <div class="empty-state-text">No report data available. Run the defense pipeline to generate data.</div>
       </div>`;
     return;
@@ -1397,22 +1791,37 @@ function render(data) {
   const m = data.metadata || {};
   document.getElementById('header-title').textContent = m.title || 'Defense Report';
   document.getElementById('sidebar-subtitle').textContent = m.deliverable_summary || m.title || '';
-  document.title = (m.title || 'Defense Report') + ' — JP Client Defender';
+  document.title = (m.title || 'Defense Report') + ' -- JP Client Defender';
 
-  let html = renderWarnings(data);
+  // Update tab counts
+  const findingsCount = (data.items || []).length + (data.structural_criticisms || []).length;
+  document.getElementById('tab-count-findings').textContent = findingsCount;
+
+  // Tab: Overview
+  let html = `<div class="tab-pane active" data-tab-pane="overview">`;
+  html += renderWarnings(data);
   html += renderSummary(data);
+  html += `</div>`;
 
-  // Items section
-  html += `<div class="section-header" id="section-items"><h2>Item Analysis</h2><span class="badge badge-type">${(data.items || []).length} items</span></div>`;
+  // Tab: Findings
+  html += `<div class="tab-pane" data-tab-pane="findings">`;
+  html += `<div class="section-header" id="section-items"><h2>Item Analysis</h2><span class="badge badge-type" id="items-count-badge">${(data.items || []).length} items</span></div>`;
   html += `<div id="items-container">${(data.items || []).map(item => renderItem(item)).join('')}</div>`;
-
-  // Structural criticisms section
   html += renderStructuralCriticisms(data);
+  html += `</div>`;
 
-  // QA Summary
+  // Tab: QA Report
+  html += `<div class="tab-pane" data-tab-pane="qa">`;
   html += renderQASummary(data);
+  html += `</div>`;
 
   document.getElementById('content-area').innerHTML = html;
+
+  // Apply saved dismiss state
+  dismissedItems.forEach(id => {
+    const card = document.querySelector(`.item-card[data-item-id="${id}"]`) || document.getElementById('struct-' + id);
+    if (card) card.classList.add('dismissed');
+  });
 
   // Populate sidebar navigation
   const navItems = document.getElementById('nav-items');
@@ -1423,13 +1832,82 @@ function render(data) {
       return (order[f.severity] || 0) > (order[max] || 0) ? f.severity : max;
     }, 'LOW');
     const sevColor = maxSev === 'HIGH' ? 'var(--c-high)' : maxSev === 'MEDIUM' ? 'var(--c-medium)' : 'var(--c-low)';
-    return `<div class="nav-item" data-target="item-${item.id}" data-item-severity="${maxSev}">
+    const isDismissed = dismissedItems.has(item.id);
+    return `<div class="nav-item${isDismissed ? ' dismissed-nav' : ''}" data-target="item-${item.id}" data-item-severity="${maxSev}">
       <span class="nav-item-dot" style="background:${sevColor}"></span>
       <span class="nav-item-label">${esc(item.title)}</span>
-      <span class="nav-item-count">${findings.length}</span>
+      <span class="nav-item-count" title="${findings.length} finding(s)">${findings.length}F</span>
+    </div>`;
+  }).join('');
+
+  // Populate structural nav
+  const navStructural = document.getElementById('nav-structural');
+  const structs = data.structural_criticisms || [];
+  navStructural.innerHTML = structs.map(sc => {
+    const sev = sc.severity || 'MEDIUM';
+    const sevColor = sev === 'HIGH' ? 'var(--c-high)' : sev === 'MEDIUM' ? 'var(--c-medium)' : 'var(--c-low)';
+    return `<div class="nav-item" data-target="struct-${sc.id}" data-item-severity="${sev}">
+      <span class="nav-item-dot" style="background:${sevColor}"></span>
+      <span class="nav-item-label">${esc(sc.id)}: ${esc((sc.criticism || '').substring(0, 40))}...</span>
     </div>`;
   }).join('');
 }
+
+// ===== QA Firm Selection =====
+function selectQAFirm(firm) {
+  const firms = ['accenture','mckinsey','bcg','bain','deloitte'];
+  const overview = document.getElementById('qa-overview-panel');
+  // Toggle active card highlight
+  document.querySelectorAll('.qa-firm-card').forEach(c => {
+    c.style.outline = (firm && c.dataset.firm === firm) ? '2px solid var(--c-accent)' : '';
+    c.style.outlineOffset = '2px';
+  });
+  if (!firm) {
+    // Back to overview: show radar, hide all firm details
+    if (overview) overview.style.display = '';
+    firms.forEach(f => {
+      const el = document.getElementById('qa-detail-' + f);
+      if (el) el.style.display = 'none';
+    });
+  } else {
+    // Show only selected firm, hide radar
+    if (overview) overview.style.display = 'none';
+    firms.forEach(f => {
+      const el = document.getElementById('qa-detail-' + f);
+      if (el) el.style.display = (f === firm) ? '' : 'none';
+    });
+  }
+}
+
+// ===== Dismiss Toggle =====
+function toggleDismiss(itemId, btn) {
+  const card = btn.closest('.item-card');
+  if (dismissedItems.has(itemId)) {
+    dismissedItems.delete(itemId);
+    card.classList.remove('dismissed');
+    btn.innerHTML = SVG.dismiss + ' Exclude';
+  } else {
+    dismissedItems.add(itemId);
+    card.classList.add('dismissed');
+    btn.innerHTML = SVG.restore + ' Restore';
+  }
+  saveDismissed();
+  // Update nav
+  const nav = document.querySelector(`.nav-item[data-target="item-${itemId}"]`);
+  if (nav) nav.classList.toggle('dismissed-nav', dismissedItems.has(itemId));
+}
+
+// ===== Tab Switching =====
+document.getElementById('tab-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  const pane = document.querySelector(`.tab-pane[data-tab-pane="${tab}"]`);
+  if (pane) pane.classList.add('active');
+});
 
 // ===== Interactivity =====
 
@@ -1440,9 +1918,27 @@ document.getElementById('sidebar-nav').addEventListener('click', e => {
   const target = navItem.dataset.target;
   const el = document.getElementById(target) || document.getElementById('section-' + target);
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Open the item card if it's an item
-    if (target.startsWith('item-')) el.classList.add('open');
+    // Switch to the correct tab first
+    if (target.startsWith('item-') || target.startsWith('struct-') || target === 'structural') {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="findings"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="findings"]').classList.add('active');
+    } else if (target === 'qa-summary') {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="qa"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="qa"]').classList.add('active');
+    } else if (target === 'summary') {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.tab-btn[data-tab="overview"]').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('.tab-pane[data-tab-pane="overview"]').classList.add('active');
+    }
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target.startsWith('item-') || target.startsWith('struct-')) el.classList.add('open');
+    }, 50);
   }
   // Update active state
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1456,21 +1952,43 @@ document.getElementById('sidebar-filters').addEventListener('click', e => {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const filter = btn.dataset.filter;
+  // Switch to findings tab for severity/excluded filters
+  if (filter !== 'all') {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="findings"]').classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelector('.tab-pane[data-tab-pane="findings"]').classList.add('active');
+  }
   document.querySelectorAll('.item-card').forEach(card => {
-    if (filter === 'all') {
-      card.style.display = '';
+    const isDismissed = card.classList.contains('dismissed');
+    if (filter === 'EXCLUDED') {
+      card.style.display = isDismissed ? '' : 'none';
+    } else if (filter === 'all') {
+      card.style.display = isDismissed ? 'none' : '';
     } else {
-      card.style.display = card.dataset.maxSeverity === filter ? '' : 'none';
+      card.style.display = (!isDismissed && card.dataset.maxSeverity === filter) ? '' : 'none';
     }
   });
-  // Also filter nav items
   document.querySelectorAll('.nav-item[data-item-severity]').forEach(nav => {
-    if (filter === 'all') {
-      nav.style.display = '';
+    const isDismissed = nav.classList.contains('dismissed-nav');
+    if (filter === 'EXCLUDED') {
+      nav.style.display = isDismissed ? '' : 'none';
+    } else if (filter === 'all') {
+      nav.style.display = isDismissed ? 'none' : '';
     } else {
-      nav.style.display = nav.dataset.itemSeverity === filter ? '' : 'none';
+      nav.style.display = (!isDismissed && nav.dataset.itemSeverity === filter) ? '' : 'none';
     }
   });
+  // Update visible item count
+  const visibleCards = document.querySelectorAll('.item-card:not([style*="display: none"])');
+  const countBadge = document.getElementById('items-count-badge');
+  if (countBadge) {
+    const label = filter === 'EXCLUDED' ? 'excluded' : filter === 'all' ? 'items' : filter;
+    countBadge.textContent = visibleCards.length + ' ' + label;
+  }
+  // Update tab count
+  const tabCount = document.getElementById('tab-count-findings');
+  if (tabCount) tabCount.textContent = visibleCards.length;
 });
 
 // Search

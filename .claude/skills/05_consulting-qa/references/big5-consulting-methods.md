@@ -112,16 +112,15 @@ BCG values honesty about trade-offs over pretending everything is optimal.
 **Grade A**: "We chose X over Y because of [trade-off]. Y has advantages in [areas] but X optimizes for [client's priority]."
 **Grade F**: "X is the best option with no downsides." (BCG would call this "lazy thinking")
 
-#### Competitive Context
-- Does the argument reference what alternatives exist?
-- Does it acknowledge the competitive landscape?
+#### Novel Insight Requirement (BCG Differentiator)
+BCG demands that analysis generates a NEW insight the client doesn't already have. Restating the obvious is not value-add.
 
-**Grade A**: "Among [N] alternatives, this approach ranks [position] on [criteria]."
-**Grade F**: Presents the approach in isolation without competitive context.
+- Does the argument tell the client something they didn't know before?
+- Does it reframe the problem in a way that opens new possibilities?
+- Would a BCG partner say "that's interesting" or "I already knew that"?
 
-#### Time Horizon
-- Are short-term and long-term implications distinct?
-- Is there a clear path from current state to target state?
+**Grade A**: Analysis surfaces a genuinely new perspective or reframes the problem — the client's thinking shifts.
+**Grade F**: Restates what the client already knows in consultant language. No new insight generated.
 
 ### BCG Additional Frameworks
 - **Strategy Palette**: 5 approaches (Classical, Adaptive, Visionary, Shaping, Renewal) — argument must match the client's strategic environment
@@ -144,36 +143,37 @@ Bain's philosophy centers on delivering measurable results. Every argument must 
 
 ### Evaluation Criteria (Detailed)
 
-#### Outcome Clarity
-Every argument must answer: "What happens after the client accepts this argument?"
+#### Value Bridge (Bain Results Delivery® Core)
+Every argument must connect to a quantified target decomposed into drivers and initiatives.
 
-**Grade A**: "Upon acceptance, we proceed to [specific action] by [date], targeting [measurable KPI] improvement of [X%]."
-**Grade F**: The argument ends with acceptance but no clear next step.
+**Grade A**: "Upon acceptance, [quantified target] is achieved by [date] via [decomposed drivers]. Finance-verifiable."
+**Grade F**: The argument ends with acceptance but no quantified outcome or decomposition.
+
+Source: [Bain Results Delivery®](https://www.bain.com/consulting-services/change-management-results-delivery/results-delivery-office/)
+
+#### Adoption Risk Diagnostics (Bain RD® Differentiator)
+Bain starts by profiling where behavior change is hardest — by function, site, role. Risks are made visible upfront.
+
+- Are adoption risks identified? Who must change? How hard will it be?
+- Is organizational readiness assessed?
+
+**Grade A**: "Adoption risks identified: [role X] faces [specific change], difficulty: [HIGH]. Mitigation: [plan]."
+**Grade F**: No consideration of adoption barriers. Assumes frictionless implementation.
+
+Source: [Bain Adoption Risk Diagnostics](https://umbrex.com/resources/frameworks/project-management-frameworks/bain-results-delivery/)
 
 #### Actionability
 - Can the client act on this immediately?
-- Are responsibilities clear?
-- Are timelines defined?
+- Are responsibilities clear with who/what/when?
 
 **Grade A**: "Next steps: [Person A] does [X] by [date]. [Person B] does [Y] by [date]. Review at [date]."
 **Grade F**: "Further consideration is recommended." (Bain would reject this as non-actionable)
 
-#### ROI Consciousness
-Every argument should have an implicit or explicit cost-benefit dimension.
+#### Outcome Measurability
+Leading and lagging indicators must be defined. Benefits must be Finance-verifiable.
 
-**Grade A**: "The effort to defend this item (estimated [hours]) saves [X hours/dollars] in revision costs."
-**Grade F**: Arguments presented without any sense of proportionality.
-
-#### Implementation Path
-Bain demands a clear "Day 1 to Day 100" vision:
-- What changes immediately?
-- What changes in 30 days?
-- What's the 90-day target?
-
-#### Accountability
-- Who is responsible for what?
-- How will success be measured?
-- What are the review checkpoints?
+**Grade A**: "Leading indicator: [metric] tracked weekly. Lagging indicator: [KPI] at 90-day review. Finance sign-off required."
+**Grade F**: Arguments presented without measurable success criteria.
 
 ### Bain Additional Frameworks
 - **Adoption Risk Diagnostics**: Before recommending, identify and quantify WHERE adoption will falter — making resistance visible upfront

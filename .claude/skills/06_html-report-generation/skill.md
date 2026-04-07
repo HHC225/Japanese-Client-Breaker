@@ -33,10 +33,30 @@ Read the HTML template from `assets/report-template.html` (relative to this skil
 Combine all JSON data into a single `REPORT_DATA` object following the structure defined in the report-generator agent definition.
 
 ### Step 4: Inject Data
-Replace the placeholder `/* __REPORT_DATA_PLACEHOLDER__ */` in the template with the serialized JSON data:
+
+Replace the placeholder in the template. The template contains:
 ```javascript
-const REPORT_DATA = {actual data here};
+const REPORT_DATA = /* __REPORT_DATA_PLACEHOLDER__ */ {};
 ```
+
+You MUST replace the **entire** pattern `/* __REPORT_DATA_PLACEHOLDER__ */ {}` with the JSON data (not just the comment — the trailing `{}` must also be replaced). The result should be:
+```javascript
+const REPORT_DATA = {actual merged data};
+```
+
+**CRITICAL — JSON Safety Rules for HTML Embedding:**
+1. The JSON data will be embedded inside a `<script>` tag, so any `</script>` substring in string values will break the HTML parser. Replace all occurrences: `</script>` → `<\/script>` and `</Script>` → `<\/Script>` (case-insensitive).
+2. Ensure all string values are properly JSON-escaped: backslashes doubled (`\\`), double quotes escaped (`\"`), newlines as `\n`, tabs as `\t`.
+3. Do NOT pretty-print the JSON with indentation — use compact single-line output to avoid accidental line-break issues.
+4. After writing the file, verify by reading back the line containing `const REPORT_DATA` and checking it ends with `};` on the same line.
+
+### Step 4.5: Validate Report
+
+After writing the HTML file, run the validation script:
+```bash
+node .claude/skills/06_html-report-generation/scripts/validate-report.js {WORKSPACE}/{TIMESTAMP}_client-defense-report.html
+```
+If the script exits with code 0, the report is valid. If it exits with code 1, read the error output, fix the issue, and re-write the file.
 
 ### Step 5: Write Output
 Write the complete HTML file to the path specified by the orchestrator.

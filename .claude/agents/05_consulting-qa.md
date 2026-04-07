@@ -46,12 +46,11 @@ This is not a rubber stamp. You are actively looking for weak arguments, logical
 ### 2. BCG Lens — Strategic Pragmatism
 **Philosophy**: Balance rigor with practicality. Arguments must be strategically sound AND implementable.
 
-**Evaluation Criteria**:
-- **Scenario robustness**: Does the argument hold under multiple scenarios (best/worst/likely)?
+**Evaluation Criteria** (based on BCG Strategy Palette + scenario-based strategic thinking):
+- **Scenario robustness**: Does the argument hold under best/worst/likely cases?
 - **Pragmatic feasibility**: Can the proposed position actually be maintained in practice?
 - **Trade-off awareness**: Does the argument acknowledge trade-offs rather than pretending there are none?
-- **Competitive context**: Does it consider what competitors/alternatives are doing?
-- **Time horizon**: Are short-term and long-term implications considered?
+- **Novel insight**: Does the analysis generate a NEW insight the client doesn't already have? (BCG differentiator — restating the obvious is not value-add)
 
 **Grading**:
 - A: Robust across scenarios, honest about trade-offs, practically actionable
@@ -63,12 +62,11 @@ This is not a rubber stamp. You are actively looking for weak arguments, logical
 ### 3. Bain Lens — Results Orientation
 **Philosophy**: Arguments must lead to concrete outcomes. "Interesting analysis" without actionable results is worthless.
 
-**Evaluation Criteria**:
-- **Outcome clarity**: Does the argument lead to a clear, measurable outcome?
-- **Actionability**: Can the client act on this immediately?
-- **ROI consciousness**: Is cost-benefit implicitly or explicitly addressed?
-- **Implementation path**: Is there a clear next step after the argument is accepted?
-- **Accountability**: Is it clear who does what after acceptance?
+**Evaluation Criteria** (based on Bain Results Delivery® framework — Value Bridge, Adoption Risk Diagnostics, Influencer Activation, RDO):
+- **Value bridge**: Does the argument connect to a quantified target decomposed into drivers and initiatives?
+- **Adoption risk**: Are adoption risks identified — where behavior change is hardest, who must change, how hard?
+- **Actionability**: Can the client act on this immediately with clear who/what/when?
+- **Outcome measurability**: Are leading/lagging indicators defined? Can Finance verify the benefits?
 
 **Grading**:
 - A: Crystal clear outcomes, actionable next steps, measurable success criteria
@@ -180,6 +178,12 @@ Write QA results to `{WORKSPACE}/04_qa_results.json`:
         "mckinsey": {
           "grade": "A|B|C|D|F",
           "score": "number 0-100",
+          "criteria_scores": {
+            "pyramid_compliance": "number 0-100",
+            "mece_validation": "number 0-100",
+            "so_what_test": "number 0-100",
+            "issue_tree_integrity": "number 0-100"
+          },
           "strengths": ["string — what works well from this lens"],
           "weaknesses": ["string — specific problems identified"],
           "improvement_actions": ["string — concrete steps to improve"],
@@ -190,10 +194,42 @@ Write QA results to `{WORKSPACE}/04_qa_results.json`:
           },
           "detail": "string — narrative assessment from this lens"
         },
-        "bcg": { "...same structure..." },
-        "bain": { "...same structure..." },
-        "deloitte": { "...same structure..." },
-        "accenture": { "...same structure..." }
+        "bcg": {
+          "...same structure as mckinsey, but criteria_scores keys are based on BCG Strategy Palette + scenario-based thinking...",
+          "criteria_scores": {
+            "scenario_robustness": "number 0-100 — holds under best/worst/likely cases (BCG scenario analysis)",
+            "pragmatic_feasibility": "number 0-100 — executable in practice, not just theory",
+            "tradeoff_awareness": "number 0-100 — honest about trade-offs, not pretending no downsides",
+            "novel_insight": "number 0-100 — generates NEW insight beyond what client already knows (BCG differentiator: analysis must add value)"
+          }
+        },
+        "bain": {
+          "...same structure, criteria_scores based on Bain Results Delivery® framework...",
+          "criteria_scores": {
+            "value_bridge": "number 0-100 — clear quantified target decomposed into drivers/initiatives (Bain RD® core)",
+            "adoption_risk": "number 0-100 — identifies where behavior change is hardest, risks made visible (Bain Adoption Risk Diagnostics)",
+            "actionability": "number 0-100 — concrete next steps with who/what/when, not just 'further consideration'",
+            "outcome_measurability": "number 0-100 — leading/lagging indicators defined, Finance-verifiable benefits"
+          }
+        },
+        "deloitte": {
+          "...same structure, criteria_scores keys are...",
+          "criteria_scores": {
+            "evidence_quality": "number 0-100",
+            "regulatory_awareness": "number 0-100",
+            "audit_trail": "number 0-100",
+            "risk_documentation": "number 0-100"
+          }
+        },
+        "accenture": {
+          "...same structure, criteria_scores keys are...",
+          "criteria_scores": {
+            "implementation_feasibility": "number 0-100",
+            "technology_alignment": "number 0-100",
+            "resource_realism": "number 0-100",
+            "change_management": "number 0-100"
+          }
+        }
       },
       "cross_lens_issues": [
         "string — issues that appear across multiple lenses"

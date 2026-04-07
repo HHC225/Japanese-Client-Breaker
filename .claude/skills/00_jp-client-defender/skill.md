@@ -31,7 +31,7 @@ The orchestrator agent runs a 5-stage pipeline, spawning each sub-agent sequenti
 | jp-client-critic | `.claude/agents/03_jp-client-critic.md` | opus | Critique from JP client perspective | jp-client-critique | `02_critic_findings.json` |
 | persuasion-strategist | `.claude/agents/04_persuasion-strategist.md` | opus | Build argument trees | persuasion-scenarios | `03_strategist_scenarios.json` |
 | consulting-qa | `.claude/agents/05_consulting-qa.md` | opus | Validate through Big 5 lenses | consulting-qa | `04_qa_results.json` |
-| report-generator | `.claude/agents/06_report-generator.md` | sonnet | Generate HTML report | html-report-generation | `defense-report.html` |
+| report-generator | `.claude/agents/06_report-generator.md` | sonnet | Generate HTML report | html-report-generation | `{TIMESTAMP}_client-defense-report.html` |
 
 ## Workspace Variable
 
@@ -43,7 +43,14 @@ When constructing sub-agent prompts below, **replace all `{WORKSPACE}` reference
 
 ### Phase 0: Preparation & Preprocessing
 
-1. Create timestamped workspace directory:
+1. **Language selection**: Before anything else, determine the output language.
+   - If the user already specified a language in their request, use it.
+   - If not, ask: "What language should the report be generated in? (e.g., Korean, Japanese, English)"
+   - Store as `{LANGUAGE}` and pass to every sub-agent prompt.
+   - Save the language to `{WORKSPACE}/00_language.txt` for reference.
+   - **Rule**: ALL generated text content (criticisms, arguments, evidence, QA feedback, summaries, titles) MUST be in `{LANGUAGE}`. JSON field names remain English. Japanese phrasing fields (`japanese_phrasing`, `criticism_jp`) are always in Japanese regardless.
+
+2. Create timestamped workspace directory:
    ```bash
    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
    WORKSPACE="_workspace/run_${TIMESTAMP}"
@@ -53,7 +60,7 @@ When constructing sub-agent prompts below, **replace all `{WORKSPACE}` reference
    Use this path as `{WORKSPACE}` for ALL file operations in subsequent phases.
    Also create/update a `_workspace/latest` symlink pointing to this run for user convenience.
 
-2. **Input directory**: `input/`
+3. **Input directory**: `input/`
    - Users place deliverable files here (Excel, PDF, PowerPoint, Word, CSV, images, text)
    - If user provides text directly instead → save to `{WORKSPACE}/00_raw_input.txt` and skip preprocessing
 
@@ -80,7 +87,7 @@ Agent(
 **Completion check**: Verify `{WORKSPACE}/00_preprocessed_input.md` exists and has substantial content.
 
 4. Determine the output report path:
-   - Default: `{WORKSPACE}/defense-report.html`
+   - Default: `{WORKSPACE}/{TIMESTAMP}_client-defense-report.html`
    - If user specifies a path, use that instead
 
 ### Phase 1: Analysis (Deliverable Analyst)
@@ -94,6 +101,8 @@ Agent(
   prompt: "You are the Deliverable Analyst. Read your agent definition at .claude/agents/02_deliverable-analyst.md and your skill at .claude/skills/02_deliverable-analysis/skill.md. Then analyze the preprocessed deliverable at {WORKSPACE}/00_preprocessed_input.md and write the structured output to {WORKSPACE}/01_analyst_items.json.
 
   Also check {WORKSPACE}/00_file_manifest.json to understand the source files and their types.
+
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content (titles, summaries, descriptions) MUST be written in {LANGUAGE}.
 
   Follow the agent definition precisely. Output MUST be valid JSON."
 )
@@ -115,6 +124,8 @@ Agent(
 
   Be genuinely critical. Think like a 部長 at a major Japanese bank reviewing a vendor deliverable. Find every weakness.
 
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content (criticism_detail, specific_weakness, client_psychology, cultural_context, likely_client_phrasing) MUST be in {LANGUAGE}. The criticism_jp field is ALWAYS in Japanese regardless. JSON field names stay in English.
+
   Output MUST be valid JSON."
 )
 ```
@@ -134,6 +145,8 @@ Agent(
   Read the critic findings from {WORKSPACE}/02_critic_findings.json and build multi-level argument trees (minimum 3 levels) for each finding. This includes BOTH the item-level 'findings' array AND the 'structural_criticisms' array. For structural criticisms, use their id as finding_id (e.g., STRUCT-001), set item_id to 'STRUCTURAL', and output them in a separate 'structural_scenarios' array. Write output to {WORKSPACE}/03_strategist_scenarios.json.
 
   Every argument tree must have culturally calibrated Japanese phrasing and a face-saving bridge at Level 3.
+
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content (your_argument, evidence, closing_strategy, expected_client_rebuttal) MUST be in {LANGUAGE}. The japanese_phrasing field is ALWAYS in Japanese regardless. JSON field names stay in English.
 
   Output MUST be valid JSON."
 )
@@ -172,6 +185,8 @@ Agent(
 
   Be ruthlessly honest. A weak argument or wrong premise that passes QA damages the user's credibility in the actual meeting.
 
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content (detail, strengths, weaknesses, improvement_actions, foundation_issues) MUST be in {LANGUAGE}. JSON field names stay in English.
+
   Output MUST be valid JSON."
 )
 ```
@@ -199,6 +214,8 @@ Agent(
   Re-analyze the deliverable incorporating the QA feedback above.
   Write corrected output to {WORKSPACE}/01_analyst_items.json (overwrite).
 
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content MUST be in {LANGUAGE}. JSON field names stay in English.
+
   Output MUST be valid JSON."
 )
 ```
@@ -222,6 +239,8 @@ Agent(
   Re-read {WORKSPACE}/01_analyst_items.json and generate corrected criticisms.
   Write corrected output to {WORKSPACE}/02_critic_findings.json (overwrite).
 
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content MUST be in {LANGUAGE}. criticism_jp is always Japanese. JSON field names stay in English.
+
   Output MUST be valid JSON."
 )
 ```
@@ -244,6 +263,8 @@ Agent(
 
   Re-read {WORKSPACE}/02_critic_findings.json and build corrected argument trees.
   Write corrected output to {WORKSPACE}/03_strategist_scenarios.json (overwrite).
+
+  OUTPUT LANGUAGE: {LANGUAGE}. ALL text content MUST be in {LANGUAGE}. japanese_phrasing is always Japanese. JSON field names stay in English.
 
   Output MUST be valid JSON."
 )
@@ -284,7 +305,9 @@ Agent(
 
   Write the final report to: [output_path]
 
-  The report must be a single, self-contained HTML file that opens in any browser."
+  OUTPUT LANGUAGE: {LANGUAGE}. The HTML template UI labels remain as-is, but the REPORT_DATA metadata.language field should be set to '{LANGUAGE}' so the template can adapt if needed.
+
+  The report must be a single, self-contained HTML file that opens in any browser without JavaScript errors. After writing, validate with: node .claude/skills/06_html-report-generation/scripts/validate-report.js [output_path]"
 )
 ```
 
@@ -382,7 +405,7 @@ Agent(
                   ▼
         ┌─────────────────┐
         │ Report           │  model: sonnet
-        │ Generator        │──→ defense-report.html
+        │ Generator        │──→ {TIMESTAMP}_client-defense-report.html
         └─────────────────┘
                   │
                   ▼
